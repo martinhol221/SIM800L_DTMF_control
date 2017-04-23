@@ -140,6 +140,10 @@ void detection(){
                       if (heating == true) {
                         gsm.println(" Progrev ");
                         } else { gsm.println(" Ojidanie ");}
+                  gsm.print("Neitral: ");
+                      if (digitalRead(STOP_Pin) == LOW) {
+                      gsm.println(" KPP v neitrali ");
+                        } else { gsm.println(" Na peredache !!! ");}
                   gsm.print("Temp.Dvig: "), gsm.print(tempds0),  gsm.println((char)94); 
                   gsm.print("Temp.Salon: "), gsm.print(tempds1), gsm.println((char)94);
                   gsm.print("Temp.Ulica: "), gsm.print(tempds2), gsm.println((char)94);
@@ -177,7 +181,7 @@ void engiestart() {  // программа запуска двигателя
 
 Serial.println ("Engie starting...."), gsm.println("AT+VTS=\"2,6\""); // пикнем в трубку 1 раз
       count = 0 ;
-if (digitalRead(Pric_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
+if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
       Serial.println ("engiestart №1"), count = 1;
       digitalWrite(ACC_Pin, LOW),    delay (5000);   // выдержка выключенного зажигания 5 сек.  
       digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
@@ -185,7 +189,7 @@ if (digitalRead(Pric_Pin) == LOW) { // если на входе Pric_Pin 0 пр�
       digitalWrite(START_Pin, LOW),  delay (5000);   // отключаем реле, ждем 5 сек.
       }
   
-if (digitalRead(Pric_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №2
+if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №2
       Serial.println ("engiestart №2"), count = 2;
       digitalWrite(ACC_Pin, LOW),    delay (5000);   // выдержка выключенного зажигания 5 сек.  
       digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
@@ -193,7 +197,7 @@ if (digitalRead(Pric_Pin) == LOW) { // если на входе Pric_Pin 0 пр�
       digitalWrite(START_Pin, LOW),  delay (5000);   // отключаем реле, ждем 5 сек.
       }
   
-if (digitalRead(Pric_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №3  
+if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №3  
       Serial.println ("engiestart №3"), count = 3;
       digitalWrite(ACC_Pin, LOW),    delay (5000);   // выдержка выключенного зажигания 5 сек.  
       digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
