@@ -104,15 +104,11 @@ if(gsm.find("+375290000000\",145,\"")){ // если нашли номер тел
         } 
                 } // end while 
 Serial.println("call-end while");
-                
-                      } // конец цикла поиска вызова
-                      
+                  } // конец цикла поиска вызова
                       
 if (millis()> Time1 + 10000) detection(), Time1 = millis(); // выполняем функцию detection () каждые 10 сек 
-
-if (heating == true && digitalRead(STOP_Pin)==1) { //если нажали на педаль тормоза в режиме прогрева
-    digitalWrite(ACTIV_Pin, LOW), digitalWrite(ACC_Pin, LOW), heating=false; // выключаем зажигание, гасим светодиод
-                                                  }
+if (heating == true && digitalRead(STOP_Pin)==1) heatingstop() ;//если нажали на педаль тормоза в режиме прогрева
+                                      
 } // end void loop 
 
 void detection(){ 
@@ -129,32 +125,31 @@ void detection(){
       WarmUpTimer = 100;  // иначе выставляем таймер 
       }  
     // условия проверяемые каждые 10 сек  
-    if (heating == true && WarmUpTimer <1) heatingstop(); // если двигатель в прогреве и таймер равен 0  -  глушим двигатель
-    if (heating == true && Vbat < 11.3) heatingstop(); // если в прогреве напряжение просело ниже 11.3 в - двигатель заглох
+    if (heating == true && WarmUpTimer <1) heatingstop(), Serial.print("End timer"); 
+    if (heating == true && Vbat < 11.3) heatingstop(), Serial.print("Low voltage"); 
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
     if (alarm_call == true && alarm_one==true) call(), alarm_call=false, alarm_one==false; // звоним на номер по тревоге
-    if (alarm_bat == true && Vbat < 7.55) alarm_bat = false, SMS_send = true; // если напряжение на АКБ ниже 6 вольт, шлем СМС
+    if (alarm_bat == true && Vbat < 7.55) alarm_bat = false, SMS_send = true, Serial.print("Voltage below 7.5 V");
     if (SMS_send == true) {  // если фаг SMS_send равен 1 высылаем отчет по СМС
-                  Serial.println("SMS send start"), delay(1000);
-                  gsm.println("AT+CMGS=\"+375290000000\""),delay(500); // номер телефона куда слать СМС
-                  gsm.println("Status Citrien C5" );
-                  gsm.print("Batareja: "), gsm.print(Vbat), gsm.println(" V.");
-                  gsm.print("Status: ");
-                      if (heating == true) {
-                        gsm.println(" Progrev ");
-                        } else { gsm.println(" Ojidanie ");}
-                  gsm.print("Neitral: ");
-                      if (digitalRead(STOP_Pin) == LOW) {
-                      gsm.println(" KPP v neitrali ");
-                        } else { gsm.println(" Na peredache !!! ");}
-                  gsm.print("Temp.Dvig: "), gsm.print(tempds0),  gsm.println((char)94); 
-                  gsm.print("Temp.Salon: "), gsm.print(tempds1), gsm.println((char)94);
-                  gsm.print("Temp.Ulica: "), gsm.print(tempds2), gsm.println((char)94);
-                   if (heating == true)  gsm.print("Timer, ostalos : "), gsm.print(WarmUpTimer * 10 / 60), gsm.println(" min.");
-                  gsm.print("Popytok zapuska: "), gsm.print(count); 
-                  delay(100), gsm.print((char)26), delay(100), Serial.println("SMS send finish");   
-                  delay(3000);
-                  SMS_send = false;
+        Serial.println("SMS send start"), delay(1000);
+        gsm.println("AT+CMGS=\"+375290000000\""),delay(500); // номер телефона куда слать СМС
+        gsm.println("Status Citrien C5" );
+        gsm.print("Batareja: "), gsm.print(Vbat), gsm.println(" V.");
+        gsm.print("Status: ");
+        if (heating == true) {
+           gsm.println(" Progrev ");
+           } else { gsm.println(" Ojidanie ");}
+        if (digitalRead(STOP_Pin) == LOW) {
+           gsm.println(" KPP v neitrali ");
+           } else { gsm.println(" Na peredache !!! ");}
+        gsm.print("Temp.Dvig: "), gsm.print(tempds0),  gsm.println((char)94); 
+        gsm.print("Temp.Salon: "), gsm.print(tempds1), gsm.println((char)94);
+        gsm.print("Temp.Ulica: "), gsm.print(tempds2), gsm.println((char)94);
+        if (heating == true)  gsm.print("Timer, ostalos : "), gsm.print(WarmUpTimer * 10 / 60), gsm.println(" min.");
+           gsm.print("Popytok zapuska: "), gsm.print(count); 
+        delay(100), gsm.print((char)26), delay(100), Serial.println("SMS send finish");   
+        delay(3000);
+        SMS_send = false;
         }
 // шлем отчет в серийный порт для отладки        
 Serial.print(" || heating ="),Serial.print(heating);
@@ -210,20 +205,20 @@ if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если 
       }
        
 if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
-   gsm.println("AT+VTS=\"4,9\""), heating = true; // пикнем в трубку, изменгим флаг
-   Serial.println ("Engine started"), digitalWrite(ACTIV_Pin, HIGH), gsm.println("ATHO");
-            }
-            else 
-            {
-   digitalWrite(ACC_Pin, LOW), heating=false, Serial.println("Engine start failed");
-   digitalWrite(ACTIV_Pin, LOW), gsm.println("ATHO"), SMS_send = true; // если нет запуска отправим СМС
-            }
+   gsm.println("AT+VTS=\"4,9\""), heating = true, digitalWrite(ACTIV_Pin, HIGH); // пикнем в трубку, изменгим флаг
+   Serial.println ("Engine started"), gsm.println("ATHO");
+                                  }
+                                  else 
+                                  {
+   heatingstop(), delay (500), gsm.println("ATHO"), SMS_send = true; // если нет запуска отправим СМС
+                                  }
 }
 
-void heatingstop() {  // программа остановки двигателя
-    digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), heating= false;
-    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""), Serial.println ("heating = false"); // пикнем в трубку 7 раз
-                 }
+void heatingstop() {  // программа остановки прогрева двигателя
+    digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
+    heating= false, ,Serial.println ("Warming stopped")
+    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""); // пикнем в трубку 7 раз
+                   }
  
 String ReadAT() 
 { 
