@@ -1,4 +1,5 @@
 // https://www.drive2.ru/l/471004119256006698/
+//Автозапуск автомобиля на связке модулей SIM800L+Arduino с управлением по DTMF и отчетами по SMS
 #include <SoftwareSerial.h> // подключаем библиотеку виртуального порта
 SoftwareSerial gsm(8, 7); // и назначаем пины связи Arduino и SIM800 RX, TX
 
