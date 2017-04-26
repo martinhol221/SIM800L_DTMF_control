@@ -121,7 +121,8 @@ void detection(){
     float tempds1 = sensors.getTempCByIndex(1);
     float tempds2 = sensors.getTempCByIndex(2);
     Vbat = analogRead(BAT_Pin);  // замеряем напряжение на батарее
-    Vbat = Vbat / m ;    // переводим попугаи в вольты 
+    Vbat = Vbat / m ; // переводим попугаи в вольты
+    Serial.print("Vbat= "),Serial.print(Vbat), Serial.print(" V.");    
     if (heating==true) { 
       WarmUpTimer--;// если двигатель в прогреве - отнимаем от таймера еденицу
     } else {  
@@ -156,7 +157,7 @@ void detection(){
                   SMS_send = false;
         }
 // шлем отчет в серийный порт для отладки        
-Serial.print("Vbat= "),Serial.print(Vbat), Serial.print(" || heating ="),Serial.print(heating);
+Serial.print(" || heating ="),Serial.print(heating);
 Serial.print(" || WarmUpTimer = "),Serial.print(WarmUpTimer),Serial.print(" || tempds0 =");
 Serial.print(tempds0),Serial.print(" || tempds1 = "), Serial.print(tempds1), Serial.print(" || tempds2 =");
 Serial.print (tempds2), Serial.print(" || millis ="), Serial.println (millis()/1000);
