@@ -171,7 +171,7 @@ Serial.println ("Start"), gsm.println("AT+VTS=\"2,6\""), count = 0; // пикн�
 
 if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
    digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
-   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   digitalWrite(ACC_Pin, HIGH),   delay (2000);                    // включаем зажигание 
    Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
    Vbat = Vbat / m , Serial.print ("Start №1 V bat: ");            // переводим попугаи в вольты.
    count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
@@ -181,7 +181,7 @@ if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если 
   
 if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
    digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
-   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   digitalWrite(ACC_Pin, HIGH),   delay (2000);                    // включаем зажигание 
    Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
    Vbat = Vbat / m , Serial.print ("Start №2 V bat: ");            // переводим попугаи в вольты.
    count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
@@ -191,7 +191,7 @@ if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если 
   
 if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
    digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
-   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   digitalWrite(ACC_Pin, HIGH),   delay (2000);                    // включаем зажигание 
    Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
    Vbat = Vbat / m , Serial.print ("Start №3 V bat: ");            // переводим попугаи в вольты.
    count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
@@ -211,7 +211,7 @@ if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
 
 void heatingstop() {  // программа остановки прогрева двигателя
     digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
-    heating= false, ,Serial.println ("Warming stopped")
+    heating= false,Serial.println ("Warming stopped");
     gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""); // пикнем в трубку 7 раз
                    }
  
