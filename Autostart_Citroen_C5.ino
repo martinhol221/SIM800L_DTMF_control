@@ -29,7 +29,7 @@ bool alarm_call = false;  // переменная состояния трево�
 bool alarm_one = false;    // флаг состояния разового срабатывания тревоги
 bool alarm_bat = false;   // флаг состояния разового срабатывания по питанию АКБ
 bool SMS_send = false;   // флаг разовой отправки СМС
-float k = 66.91;         // делитель для перевода АЦП в вольты
+float m = 66.91;         // делитель для перевода АЦП в вольты
 float Vbat;              // переменная хранящая напряжение бортовой сети
  
 void setup() 
@@ -121,7 +121,7 @@ void detection(){
     float tempds1 = sensors.getTempCByIndex(1);
     float tempds2 = sensors.getTempCByIndex(2);
     Vbat = analogRead(BAT_Pin);  // замеряем напряжение на батарее
-    Vbat = Vbat / k ;    // переводим попугаи в вольты 
+    Vbat = Vbat / m ;    // переводим попугаи в вольты 
     if (heating==true) { 
       WarmUpTimer--;// если двигатель в прогреве - отнимаем от таймера еденицу
     } else {  
@@ -169,71 +169,59 @@ alarm_call = true; // меняем флаг и выходим из цикла
 
 void  call()   // функция обратного звонка
 {  
-Serial.println ("call +37529,,,,,");
+Serial.println ("call +37529.....");
+gsm.println("ATD+375290000000;"), delay(100); // звоним по указаному номеру
+if (gsm.find("OK")) Serial.println("OK ATD");
+else Serial.println("error ATD");
+}  
 
- gsm.println("ATD+375290000000;"); // звоним по указаному номеру
-      delay(100);
-      if (gsm.find("OK")) Serial.println("OK ATD");
-      else Serial.println("error ATD");
-  }  
+void engiestart() {                                                 // программа запуска двигателя
+Serial.println ("Start"), gsm.println("AT+VTS=\"2,6\""), count = 0; // пикнем в трубку 1 раз
 
-
-
-void engiestart() {  // программа запуска двигателя
-
-Serial.println ("Engie starting...."), gsm.println("AT+VTS=\"2,6\""); // пикнем в трубку 1 раз
-      count = 0 ;
 if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
-      digitalWrite(ACC_Pin, LOW),    delay (2000);   // выдержка выключенного зажигания 5 сек. 
-      Vbat = analogRead(BAT_Pin);                    // замеряем напряжение на батарее
-      Vbat = Vbat / k , Serial.print ("Start №1 V bat: ");
-      count = 1, Serial.println (BAT_Pin);           // переводим попугаи в вольты
-      digitalWrite(ACC_Pin, LOW),    delay (3000);   // выдержка выключенного зажигания 3 сек.  
-      digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
-      digitalWrite(START_Pin, HIGH), delay (1000);   // включаем реле стартером 1 сек. 
-      digitalWrite(START_Pin, LOW),  delay (5000);   // отключаем реле, ждем 5 сек.
+   digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
+   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
+   Vbat = Vbat / m , Serial.print ("Start №1 V bat: ");            // переводим попугаи в вольты.
+   count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
+   digitalWrite(START_Pin, HIGH), delay (1000);                    // включаем реле стартера на 1.0 сек. 
+   digitalWrite(START_Pin, LOW),  delay (5000);                    // отключаем реле, ждем 5 сек.
       }
   
-if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №2
-      digitalWrite(ACC_Pin, LOW),    delay (2000);   // выдержка выключенного зажигания 5 сек. 
-      Vbat = analogRead(BAT_Pin);                    // замеряем напряжение на батарее
-      Vbat = Vbat / k , Serial.print ("Start №2 V bat: ");
-      count = 2, Serial.println (BAT_Pin);           // переводим попугаи в вольты
-      digitalWrite(ACC_Pin, LOW),    delay (3000);   // выдержка выключенного зажигания 3 сек.  
-      digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
-      digitalWrite(START_Pin, HIGH), delay (1200);   // включаем реле стартером 1.2 сек. 
-      digitalWrite(START_Pin, LOW),  delay (5000);   // отключаем реле, ждем 5 сек.
+if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
+   digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
+   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
+   Vbat = Vbat / m , Serial.print ("Start №2 V bat: ");            // переводим попугаи в вольты.
+   count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
+   digitalWrite(START_Pin, HIGH), delay (1200);                    // включаем реле стартера на 1.2 сек. 
+   digitalWrite(START_Pin, LOW),  delay (5000);                    // отключаем реле, ждем 5 сек.
       }
   
-if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №3  
-      digitalWrite(ACC_Pin, LOW),    delay (2000);   // выдержка выключенного зажигания 5 сек. 
-      Vbat = analogRead(BAT_Pin);                    // замеряем напряжение на батарее
-      Vbat = Vbat / k , Serial.print ("Start №3 V bat: ");
-      count = 3, Serial.println (BAT_Pin);           // переводим попугаи в вольты
-      digitalWrite(ACC_Pin, LOW),    delay (3000);   // выдержка выключенного зажигания 3 сек.  
-      digitalWrite(ACC_Pin, HIGH),   delay (5000);   // выдержка включенного зажигания 5 сек.
-      digitalWrite(START_Pin, HIGH), delay (1500);   // включаем реле стартером 1.5 сек. 
-      digitalWrite(START_Pin, LOW),  delay (5000);   // отключаем реле, ждем 5 сек.
-      }      
-  
+if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если на входе Pric_Pin 0 пробуем заводить, потытка №1
+   digitalWrite(ACC_Pin, LOW),    delay (3000);                    // выключаем зажигание на 3 сек.      
+   digitalWrite(ACC_Pin, HIGT),   delay (2000);                    // включаем зажигание 
+   Vbat = analogRead(BAT_Pin);                                     // замеряем напряжение на батарее через 2 сек.
+   Vbat = Vbat / m , Serial.print ("Start №3 V bat: ");            // переводим попугаи в вольты.
+   count = 1, Serial.println (BAT_Pin), delay (2000);              // печатаем в сериал вольты.
+   digitalWrite(START_Pin, HIGH), delay (1500);                    // включаем реле стартера на 1.5 сек. 
+   digitalWrite(START_Pin, LOW),  delay (5000);                    // отключаем реле, ждем 5 сек.
+      }
        
-if (digitalRead(Pric_Pin) == HIGH){ // если появилось питание переферии считаем что двигател успешно запущен
-            gsm.println("AT+VTS=\"4,9\""), heating = true;
-            Serial.println ("heating = true"), digitalWrite(ACTIV_Pin, HIGH), gsm.println("ATHO");
+if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
+   gsm.println("AT+VTS=\"4,9\""), heating = true; // пикнем в трубку, изменгим флаг
+   Serial.println ("Engine started"), digitalWrite(ACTIV_Pin, HIGH), gsm.println("ATHO");
             }
             else 
             {
-            
-            digitalWrite(ACC_Pin, LOW), heating=false, Serial.println("heating = false");
-            digitalWrite(ACTIV_Pin, LOW), gsm.println("ATHO"), SMS_send = true; // если нет запуска отправим СМС
+   digitalWrite(ACC_Pin, LOW), heating=false, Serial.println("Engine start failed");
+   digitalWrite(ACTIV_Pin, LOW), gsm.println("ATHO"), SMS_send = true; // если нет запуска отправим СМС
             }
-            
 }
 
 void heatingstop() {  // программа остановки двигателя
     digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), heating= false;
-    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""), Serial.println ("heating = false");
-    // пикнем в трубку 7 раз
+    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""), Serial.println ("heating = false"); // пикнем в трубку 7 раз
                  }
  
 String ReadAT() 
