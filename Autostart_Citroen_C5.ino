@@ -102,13 +102,13 @@ if(gsm.find("+375290000000\",145,\"")){ // если нашли номер тел
         // если пришел отбой или прошло 50 сек. - выходим из цикла
         break; 
         } 
-                } // end while 
+                } // конец цикла разговора
 Serial.println("call-end while");
                   } // конец цикла поиска вызова
                       
 if (millis()> Time1 + 10000) detection(), Time1 = millis(); // выполняем функцию detection () каждые 10 сек 
 if (heating == true && digitalRead(STOP_Pin)==1) heatingstop() ;//если нажали на педаль тормоза в режиме прогрева
-                                      
+                                     
 } // end void loop 
 
 void detection(){ // условия проверяемые каждые 10 сек  
@@ -119,15 +119,15 @@ void detection(){ // условия проверяемые каждые 10 се�
     Vbat = analogRead(BAT_Pin);  // замеряем напряжение на батарее
     Vbat = Vbat / m ; // переводим попугаи в вольты
     Serial.print("Vbat= "),Serial.print(Vbat), Serial.println(" V.");    
-    if (heating == true) WarmUpTimer--;// если двигатель в режиме прогрева - отнимаем от таймера еденицу      
-    if (heating == true && WarmUpTimer <1) heatingstop(), Serial.print("End timer"); 
-    if (heating == true && Vbat < 11.3) heatingstop(), Serial.print("Low voltage"); 
+    if (heating == true) WarmUpTimer--;    // если двигатель в режиме прогрева - отнимаем от таймера еденицу      
+    if (heating == true && WarmUpTimer <1) Serial.print("End timer"), heatingstop() ; 
+    if (heating == true && Vbat < 11.3) Serial.print("Low voltage"), heatingstop() ; 
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
     if (alarm_call == true && alarm_one==true) call(), alarm_call=false, alarm_one==false; // звоним на номер по тревоге
     if (alarm_bat == true && Vbat < 7.55) alarm_bat = false, SMS_send = true, Serial.print("Voltage below 7.5 V");
     if (SMS_send == true) {  // если фаг SMS_send равен 1 высылаем отчет по СМС
         Serial.println("SMS send start"), delay(1000);
-        gsm.println("AT+CMGS=\"+375290000000\""),delay(500); // номер телефона куда слать СМС
+        gsm.println("AT+CMGS=\"+375290000000\""), delay(500); // номер телефона куда слать СМС
         gsm.println("Status Citrien C5" );
         gsm.print("Batareja: "), gsm.print(Vbat), gsm.println(" V.");
         gsm.print("Status: ");
