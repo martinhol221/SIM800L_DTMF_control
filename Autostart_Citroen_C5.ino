@@ -38,7 +38,7 @@ Serial.begin(9600);
 gsm.begin(9600); 
 gsm.println("AT+CLIP=1"),delay (20); // включаем определитель номера
 gsm.setTimeout(100),delay (20); // задаем задержку для Serial.parseInt() 
-Serial.println ("Starting, v.1.8 22/04/2017 ");
+Serial.println ("Starting, v.1.9 26/04/2017 ");
 pinMode(2, INPUT_PULLUP);    // подтягиваем ногу оптрона (датчика вибрации) к +3.3v 
 pinMode(ACTIV_Pin, OUTPUT);  // указываем пин на выход (светодиод)
 pinMode(START_Pin, OUTPUT);  // указываем пин на выход (реле стартера)
@@ -54,7 +54,7 @@ void loop() {
 if(gsm.find("+375290000000\",145,\"")){ // если нашли номер телефона то
     Serial.println("RING! +375....."); 
     gsm.println("AT+DDET=1"), delay(10); // включаем DTMF-декодер
-    gsm.println("ATA"), delay(1000); // снимаем трубку
+    gsm.println("ATA"), delay(500); // снимаем трубку
     gsm.println("AT+VTS=\"3,5,7\""), delay(200); // пикнем в трубку 2 раза
     
     unsigned long start_call=millis();
@@ -111,20 +111,15 @@ if (heating == true && digitalRead(STOP_Pin)==1) heatingstop() ;//если на�
                                       
 } // end void loop 
 
-void detection(){ 
+void detection(){ // условия проверяемые каждые 10 сек  
     sensors.requestTemperatures();   // читаем температуру с трех датчиков
     float tempds0 = sensors.getTempCByIndex(0);  
     float tempds1 = sensors.getTempCByIndex(1);
     float tempds2 = sensors.getTempCByIndex(2);
     Vbat = analogRead(BAT_Pin);  // замеряем напряжение на батарее
     Vbat = Vbat / m ; // переводим попугаи в вольты
-    Serial.print("Vbat= "),Serial.print(Vbat), Serial.print(" V.");    
-    if (heating==true) { 
-      WarmUpTimer--;// если двигатель в прогреве - отнимаем от таймера еденицу
-    } else {  
-      WarmUpTimer = 100;  // иначе выставляем таймер 
-      }  
-    // условия проверяемые каждые 10 сек  
+    Serial.print("Vbat= "),Serial.print(Vbat), Serial.println(" V.");    
+    if (heating == true) WarmUpTimer--;// если двигатель в режиме прогрева - отнимаем от таймера еденицу      
     if (heating == true && WarmUpTimer <1) heatingstop(), Serial.print("End timer"); 
     if (heating == true && Vbat < 11.3) heatingstop(), Serial.print("Low voltage"); 
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
