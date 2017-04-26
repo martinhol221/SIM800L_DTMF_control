@@ -120,8 +120,8 @@ void detection(){ // условия проверяемые каждые 10 се�
     Vbat = Vbat / m ; // переводим попугаи в вольты
     Serial.print("Vbat= "),Serial.print(Vbat), Serial.println(" V.");    
     if (heating == true) WarmUpTimer--;    // если двигатель в режиме прогрева - отнимаем от таймера еденицу      
-    if (heating == true && WarmUpTimer <1) Serial.print("End timer"), heatingstop() ; 
-    if (heating == true && Vbat < 11.3) Serial.print("Low voltage"), heatingstop() ; 
+    if (heating == true && WarmUpTimer <1) Serial.println("End timer"), heatingstop() ; 
+    if (heating == true && Vbat < 11.3) Serial.println("Low voltage"), heatingstop() ; 
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
     if (alarm_call == true && alarm_one==true) call(), alarm_call=false, alarm_one==false; // звоним на номер по тревоге
     if (alarm_bat == true && Vbat < 7.55) alarm_bat = false, SMS_send = true, Serial.print("Voltage below 7.5 V");
