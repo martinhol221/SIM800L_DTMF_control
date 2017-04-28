@@ -95,7 +95,7 @@ if(gsm.find("+375000000000\",145,\"")){ // если нашли номер тел
         delay(200), pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, WarmUpTimer=120, Serial.println("Start 456"), engiestart(); 
 
         } else if (pin[0]==8 && pin[1]==9 && pin[2]==6){     // если пин 863 
-        pin[0]=0, pin[1]=0, pin[2]=0, poz=0, Serial.println("STOP"), gsm.println("ATHO"), heatingstop(); // обнуляем пинкод выключаем зажигание
+        pin[0]=0, pin[1]=0, pin[2]=0, poz=0, Serial.println("STOP"), heatingstop(); // обнуляем пинкод выключаем зажигание
         }
           
         else if(AT_CMD=="\r\nNO CARRIER\r\n" || millis() > start_call + Time2 *1000){ 
