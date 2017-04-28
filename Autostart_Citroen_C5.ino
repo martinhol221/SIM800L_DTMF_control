@@ -20,7 +20,7 @@ DallasTemperature sensors(&oneWire);
 
 String AT_CMD;          // переменная хранения массива данных от модема
 int poz = 0;            // позиция в массиве пинкода
-int pin[3];             // сам массив набираемого пинкода
+int pin[30];             // сам массив набираемого пинкода
 int WarmUpTimer = 100;  // переменная времени прогрева двигателя по умолчанию
 int count = 0 ;         // счетчик неудачных попыток запуска  
 unsigned long Time1 = 0;
@@ -39,7 +39,7 @@ Serial.begin(9600);
 gsm.begin(9600); 
 gsm.println("AT+CLIP=1"),delay (20); // включаем определитель номера
 gsm.setTimeout(100),delay (20); // задаем задержку для Serial.parseInt() 
-Serial.println ("Starting, v.1.9 26/04/2017 ");
+Serial.println ("Starting, v.1.9 28/04/2017 ");
 pinMode(2, INPUT_PULLUP);    // подтягиваем ногу оптрона (датчика вибрации) к +3.3v 
 pinMode(ACTIV_Pin, OUTPUT);  // указываем пин на выход (светодиод)
 pinMode(START_Pin, OUTPUT);  // указываем пин на выход (реле стартера)
@@ -52,9 +52,9 @@ attachInterrupt(0, alarm, FALLING); // прерывание на датчик в
 
 void loop() { 
 
-if(gsm.find("+375290000000\",145,\"")){ // если нашли номер телефона то
+if(gsm.find("+375000000000\",145,\"")){ // если нашли номер телефона то
     Serial.println("RING! +375....."); 
-    gsm.println("AT+DDET=1"), delay(10); // включаем DTMF-декодер
+    gsm.println("AT+DDET=1"), delay(100); // включаем DTMF-декодер
     gsm.println("ATA"), delay(500); // снимаем трубку
     gsm.println("AT+VTS=\"3,5,7\""), delay(200); // пикнем в трубку 2 раза
     
@@ -64,43 +64,42 @@ if(gsm.find("+375290000000\",145,\"")){ // если нашли номер тел
         while(1){ // крутимся в цикле при снятой трубке пока не разорвется вызов
           
         AT_CMD=ReadAT(); // детектируем нажатие кнопок разбирая команды
-        delay(500);     
-        if(AT_CMD=="\r\n+DTMF: 1\r\n")       {pin[poz]=1, poz++ ;  
+        delay(300);     
+        if(AT_CMD=="\r\n+DTMF: 1\r\n")       {pin[poz]=1, poz++, Serial.print("1");  
   
-        }else if(AT_CMD=="\r\n+DTMF: 2\r\n") {pin[poz]=2, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 2\r\n") {pin[poz]=2, poz++, Serial.print("2") ; 
   
-        }else if(AT_CMD=="\r\n+DTMF: 3\r\n") {pin[poz]=3, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 3\r\n") {pin[poz]=3, poz++, Serial.print("3") ; 
   
-        }else if(AT_CMD=="\r\n+DTMF: 4\r\n") {pin[poz]=4, poz++ ;  
+        }else if(AT_CMD=="\r\n+DTMF: 4\r\n") {pin[poz]=4, poz++, Serial.print("4") ;  
    
-        }else if(AT_CMD=="\r\n+DTMF: 5\r\n") {pin[poz]=5, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 5\r\n") {pin[poz]=5, poz++, Serial.print("5") ; 
   
-        }else if(AT_CMD=="\r\n+DTMF: 6\r\n") {pin[poz]=6, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 6\r\n") {pin[poz]=6, poz++, Serial.print("6") ; 
   
-        }else if(AT_CMD=="\r\n+DTMF: 7\r\n") {pin[poz]=7, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 7\r\n") {pin[poz]=7, poz++, Serial.print("7") ; 
   
-        }else if(AT_CMD=="\r\n+DTMF: 8\r\n") {pin[poz]=8, poz++ ; 
+        }else if(AT_CMD=="\r\n+DTMF: 8\r\n") {pin[poz]=8, poz++, Serial.print("8") ; 
         
-        }else if(AT_CMD=="\r\n+DTMF: 9\r\n") {pin[poz]=9, poz++ ;  
+        }else if(AT_CMD=="\r\n+DTMF: 9\r\n") {pin[poz]=9, poz++, Serial.print("9") ;  
         
-        }else if(AT_CMD=="\r\n+DTMF: 0\r\n") {pin[poz]=0, poz++ ; 
-  
-        }else if(AT_CMD=="\r\n+DTMF: *\r\n") {pin[0]=0, pin[1]=0, pin[2]=0, poz=0 ; 
+
+        }else if(AT_CMD=="\r\n+DTMF: 0\r\n") {pin[0]=0, pin[1]=0, pin[2]=0, poz=0, Serial.println("0 > 000"); 
                 
         }else if(AT_CMD=="\r\n+DTMF: #\r\n") {SMS_send=true, alarm_one=true, alarm_bat=false; 
         
-        }else if (pin[0]==1 && pin[1]==2 && pin[2]==3){ // если пин 123 обнуляем пинкод > запуск на 10 минут
-        delay(200), pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, WarmUpTimer=60, engiestart(); 
+        }else if (pin[0]==2 && pin[1]==3 && pin[2]==6){ // если пин 236 обнуляем пинкод > запуск на 10 минут
+        delay(200), pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, WarmUpTimer=60, Serial.println("Start 123"), engiestart(); 
         
-        }else if (pin[0]==4 && pin[1]==5 && pin[2]==6){ // если пин 456 обнуляем пинкод > запуск на  20 минут
-        delay(200), pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, WarmUpTimer=120, engiestart(); 
-        
-        } else if (pin[0]==7 && pin[1]==8 && pin[2]==9){     // если пин 789 
-        pin[0]=0, pin[1]=0, pin[2]=0, poz=0, heatingstop(); // обнуляем пинкод выключаем зажигание
+        }else if (pin[0]==5 && pin[1]==6 && pin[2]==7){ // если пин 567 обнуляем пинкод > запуск на  20 минут
+        delay(200), pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, WarmUpTimer=120, Serial.println("Start 456"), engiestart(); 
+
+        } else if (pin[0]==8 && pin[1]==9 && pin[2]==6){     // если пин 863 
+        pin[0]=0, pin[1]=0, pin[2]=0, poz=0, Serial.println("STOP"), gsm.println("ATHO"), heatingstop(); // обнуляем пинкод выключаем зажигание
         }
           
         else if(AT_CMD=="\r\nNO CARRIER\r\n" || millis() > start_call + Time2 *1000){ 
-        // если пришел отбой или прошло 50 сек. - выходим из цикла
+        gsm.println("ATHO");
         break; 
         } 
                 } // конец цикла разговора
@@ -128,7 +127,7 @@ void detection(){ // условия проверяемые каждые 10 се�
     if (alarm_bat == true && Vbat < 7.55) alarm_bat = false, SMS_send = true, Serial.print("Voltage below 7.5 V");
     if (SMS_send == true) {  // если фаг SMS_send равен 1 высылаем отчет по СМС
         Serial.println("SMS send start"), delay(1000);
-        gsm.println("AT+CMGS=\"+375290000000\""), delay(500); // номер телефона куда слать СМС
+        gsm.println("AT+CMGS=\"+375000000000\""), delay(500); // номер телефона куда слать СМС
         gsm.println("Status Citrien C5" );
         gsm.print("Batareja: "), gsm.print(Vbat), gsm.println(" V.");
         gsm.print("Status: ");
@@ -159,10 +158,10 @@ void alarm()   //   функция ревоги, если на оптрон пр
 alarm_call = true; // меняем флаг и выходим из цикла
   }
 
-void  call()   // функция обратного звонка
+void  call()   // функция обратного звонка375000000000
 {  
 Serial.println ("call +37529.....");
-gsm.println("ATD+375290000000;"), delay(100); // звоним по указаному номеру
+gsm.println("ATD+375000000000;"), delay(100); // звоним по указаному номеру
 if (gsm.find("OK")) Serial.println("OK ATD");
 else Serial.println("error ATD");
 }  
@@ -212,8 +211,8 @@ if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
 
 void heatingstop() {  // программа остановки прогрева двигателя
     digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
-    heating= false,Serial.println ("Warming stopped");
-    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""); // пикнем в трубку 7 раз
+    heating= false, Serial.println ("Warming stopped");
+    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""),delay(6000), gsm.println("ATHO"); // пикнем в трубку 7 раз
                    }
  
 String ReadAT() 
