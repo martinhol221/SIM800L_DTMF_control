@@ -89,12 +89,12 @@ if(gsm.find("+375000000000\",145,\"")){ // если нашли номер тел
         }else if(AT_CMD=="\r\n+DTMF: #\r\n") {SMS_send=true, alarm_one=true, alarm_bat=false; 
         
         }else if (pin[0]==2 && pin[1]==3 && pin[2]==6){ // если пин 236 обнуляем пинкод > запуск на 10 минут
-        delay(200), pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, WarmUpTimer=60, Serial.println("Start 123"), engiestart(); 
+        delay(200), pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, WarmUpTimer=60, Serial.println("Start 263"), engiestart(); 
         
         }else if (pin[0]==5 && pin[1]==6 && pin[2]==7){ // если пин 567 обнуляем пинкод > запуск на  20 минут
-        delay(200), pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, WarmUpTimer=120, Serial.println("Start 456"), engiestart(); 
+        delay(200), pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, WarmUpTimer=120, Serial.println("Start 567"), engiestart(); 
 
-        } else if (pin[0]==8 && pin[1]==9 && pin[2]==6){     // если пин 863 
+        } else if (pin[0]==8 && pin[1]==9 && pin[2]==6){     // если пин 896 
         pin[0]=0, pin[1]=0, pin[2]=0, poz=0, Serial.println("STOP"), heatingstop(); // обнуляем пинкод выключаем зажигание
         }
           
