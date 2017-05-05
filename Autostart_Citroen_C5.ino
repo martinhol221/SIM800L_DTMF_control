@@ -39,7 +39,7 @@ Serial.begin(9600);
 gsm.begin(9600); 
 gsm.println("AT+CLIP=1"),delay (20); // включаем определитель номера
 gsm.setTimeout(100),delay (20); // задаем задержку для Serial.parseInt() 
-Serial.println ("Starting, v.1.9 28/04/2017 ");
+Serial.println ("Starting, v.2.0 05/05/2017 ");
 pinMode(2, INPUT_PULLUP);    // подтягиваем ногу оптрона (датчика вибрации) к +3.3v 
 pinMode(ACTIV_Pin, OUTPUT);  // указываем пин на выход (светодиод)
 pinMode(START_Pin, OUTPUT);  // указываем пин на выход (реле стартера)
@@ -99,7 +99,7 @@ if(gsm.find("+375000000000\",145,\"")){ // если нашли номер тел
         }
           
         else if(AT_CMD=="\r\nNO CARRIER\r\n" || millis() > start_call + Time2 *1000){ 
-        gsm.println("ATHO");
+        gsm.println("ATH0");
         break; 
         } 
                 } // конец цикла разговора
@@ -205,14 +205,14 @@ if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
                                   }
                                   else 
                                   {
-   heatingstop(), delay (500), gsm.println("ATHO"), SMS_send = true; // если нет запуска отправим СМС
+   heatingstop(), delay (500), gsm.println("ATH0"), SMS_send = true; // если нет запуска отправим СМС
                                   }
 }
 
 void heatingstop() {  // программа остановки прогрева двигателя
     digitalWrite(ACC_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
     heating= false, Serial.println ("Warming stopped");
-    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""),delay(6000), gsm.println("ATHO"); // пикнем в трубку 7 раз
+    gsm.println("AT+VTS=\"7,7,7,7,7,7,7,7\""),delay(6000), gsm.println("ATH0"); // пикнем в трубку 7 раз
                    }
  
 String ReadAT() 
