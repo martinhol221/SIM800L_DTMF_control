@@ -201,7 +201,7 @@ if (digitalRead(Pric_Pin) == LOW && digitalRead(STOP_Pin) == LOW) { // если 
        
 if (digitalRead(Pric_Pin) == HIGH){ // если есть старт
    gsm.println("AT+VTS=\"4,9\""), heating = true, digitalWrite(ACTIV_Pin, HIGH); // пикнем в трубку, изменгим флаг
-   Serial.println ("Engine started"), gsm.println("ATHO");
+   Serial.println ("Engine started"), gsm.println("ATH0");
                                   }
                                   else 
                                   {
