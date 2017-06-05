@@ -84,14 +84,14 @@ void loop() {
     } else if (at.indexOf(".") > -1 && modem == 7) {Serial.println(at), SIM800.println("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\""), modem = 8;                                
     } else if (at.indexOf("CONNECT OK") > -1 && modem == 8 ) {SIM800.println("AT+CIPSEND"), Serial.println("CONNECT OK"), modem = 9; // меняем статус модема
     } else if (at.indexOf(">") > -1 && modem == 9 ) {  // "набиваем" пакет данными 
-         Serial.print("#SI-M8-00-78-45-78#SIM800+Sensor"); // индивидуальный номер для народмона
+         Serial.print("#SI-M8-00-12-34-58#SIM800+Sensor"); // индивидуальный номер для народмона
          Serial.print("\n#Temp1#"), Serial.print(Temp0);       
          Serial.print("\n#Temp2#"), Serial.print(Temp1);       
          Serial.print("\n#Temp3#"), Serial.print(Temp2);       
          Serial.print("\n#Vbat#"),  Serial.print(Vbat);        
          Serial.println("\n##");      // обязательный параметр окончания пакета данных
          delay(500);  // и шлем на сервер 
-         SIM800.print("#SI-M8-00-78-45-78#SIM800+Sensor"); // индивидуальный номер для народмона
+         SIM800.print("#SI-M8-00-12-34-58#SIM800+Sensor"); // индивидуальный номер для народмона
          if (Temp0 > -40 && Temp0 < 54) SIM800.print("\n#Temp1#"), SIM800.print(Temp0);       
          if (Temp1 > -40 && Temp1 < 54) SIM800.print("\n#Temp2#"), SIM800.print(Temp1);       
          if (Temp2 > -40 && Temp2 < 54) SIM800.print("\n#Temp3#"), SIM800.print(Temp2);       
