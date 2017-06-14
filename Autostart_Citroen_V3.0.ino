@@ -151,7 +151,8 @@ int StarterTime = 1000;  // переменная хранения времени
         { // если статра нет вертимся в цикле
         heating = false, Serial.println (" Vbat < 13.20,  heating = false");
         SIM800.println("AT+VTS=\"8,8,8\""), delay (1500);
-        digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), SMS_send = true; 
+        digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
+        if (count == 0) SMS_send = true; 
         }
   
     }
