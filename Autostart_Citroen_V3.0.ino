@@ -18,7 +18,6 @@ float Temp0, Temp1, Temp2 ;  // переменные хранения темпе
 int k = 0;
 int poz = 0;            // позиция в массиве пинкода
 int pin[20];             // сам массив набираемого пинкода
-int count = 3 ;         // счетчик попыток запуска  
 String at = "";
 unsigned long Time1 = 0; 
 int Timer = 0;     // таймер времени прогрева двигателя по умолчанию = 0
@@ -113,7 +112,6 @@ void detection(){ // условия проверяемые каждые 10 се�
         SIM800.print("\n Temp.Salon: "), SIM800.print(Temp1);
         SIM800.print("\n Temp.Ulica: "), SIM800.print(Temp2); 
         if (digitalRead(Feedback_Pin) == HIGH) SIM800.print("\n Zahiganie ON ");
-        SIM800.print("\n Popytok zapuska: "), SIM800.print(3-count);
         SIM800.print("\n Vbat: "), SIM800.print(Vbat), SIM800.print((char)26), SMS_send = false;
               }
                  
