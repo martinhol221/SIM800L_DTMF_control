@@ -52,8 +52,8 @@ void loop() {
     } else if (at.indexOf("+CLIP: \"+375000000002\",") > -1){ // реакция на входящий звонок с номера 2
     if (heating == false){ // если вебаста выключена то включаем ее сразу
                   delay(50), SIM800.println("ATH0"), Timer = 60, webastoON();
-                         } else { // если включена то ждем 2 гудка и выключаем 
-                  delay(10000), SIM800.println("ATH0"), webastoOFF();
+                         } else { // если включена то выключаем 
+                  delay(50), SIM800.println("ATH0"), webastoOFF();
                                 }
             
     } else if (at.indexOf("NO CARRIER") > -1){modem=0;
