@@ -107,7 +107,7 @@ void loop() {
     SIM800.println(at),at = "";  //очищаем
                          }
   //             первая       вторая       третья   цифра пин кода
-        if (pin[0]==1 && pin[1]==3 && pin[2]==3){pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, Timer = 60, webastoON(); 
+        if (pin[0]==1 && pin[1]==2 && pin[2]==3){pin[0]= 0, pin[1]=0, pin[2]=0, poz=0, Timer = 60, webastoON(); 
   }else if (pin[0]==2 && pin[1]==5 && pin[2]==8){pin[0]= 0, pin[1]= 0, pin[2]=0, poz=0, Timer = 120, webastoON(); 
   }else if (pin[0]==3 && pin[1]==2 && pin[2]==1){pin[0]=0, pin[1]=0, pin[2]=0, poz=0, webastoOFF()  ;
   }
