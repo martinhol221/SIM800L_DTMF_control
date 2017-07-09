@@ -94,7 +94,8 @@ void loop() {
          if (Temp0 > -40 && Temp0 < 54) SIM800.print("\n#Temp1#"), SIM800.print(Temp0);       
          if (Temp1 > -40 && Temp1 < 54) SIM800.print("\n#Temp2#"), SIM800.print(Temp1);       
          if (Temp2 > -40 && Temp2 < 54) SIM800.print("\n#Temp3#"), SIM800.print(Temp2);       
-         SIM800.print("\n#Vbat#"),  SIM800.print(Vbat);         
+         SIM800.print("\n#Vbat#"),  SIM800.print(Vbat);  
+         SIM800.print("\n#Webasto#"),  SIM800.print(heating);  
          SIM800.println("\n##");      // обязательный параметр окончания пакета данных
          SIM800.println((char)26), delay (100);
          modem = 0, delay (100), SIM800.println("AT+CIPSHUT"); // закрываем пакет
