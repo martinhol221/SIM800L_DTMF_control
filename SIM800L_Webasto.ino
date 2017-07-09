@@ -1,4 +1,9 @@
-// Версия прошивки для вебасто
+/* Версия прошивки для вебасто
+заменить номер +375000000001 на свой для управления по DTMF
+заменить номер +375000000002 на свой если хотите включать глухарем
+заменить точку доступа internet.mts.by на ТД вашего сотового оператора
+заменить #SI-M8-00-12-34-58#... на свои придуманные циферки 12-74-12-34-77-D1  (пример)
+  */
 #include <SoftwareSerial.h>
 SoftwareSerial SIM800(8, 7); // RX, TX
 #include <DallasTemperature.h> // подключаем библиотеку чтения датчиков температуры
@@ -44,7 +49,7 @@ void loop() {
       delay(50), SIM800.println("ATA"), pin[0]=0, pin[1]=0,pin[2]=0, poz=0, modem=10;
       delay(50),SIM800.println("AT+VTS=\"3,5,7\""), Serial.println("Incoming call 1");
 
-    } else if (at.indexOf("+CLIP: \"+375000000001\",") > -1){ // реакция на входящий звонок
+    } else if (at.indexOf("+CLIP: \"+375000000002\",") > -1){ // реакция на входящий звонок
       delay(50), SIM800.println("ATH0"), Timer = 60, webastoON();
 
     } else if (at.indexOf("NO CARRIER") > -1){modem=0;
@@ -77,14 +82,14 @@ void loop() {
     } else if (at.indexOf(".") > -1 && modem == 7) {Serial.println(at), SIM800.println("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\""), modem = 8;                                
     } else if (at.indexOf("CONNECT OK") > -1 && modem == 8 ) {SIM800.println("AT+CIPSEND"), Serial.println("CONNECT OK"), modem = 9; // меняем статус модема
     } else if (at.indexOf(">") > -1 && modem == 9 ) {  // "набиваем" пакет данными 
-         Serial.print("#SI-M8-00-12-34-58#SIM800+Sensor"); // индивидуальный номер для народмона. придумайте свой !!!!!!!!!!
+         Serial.print("#SI-M8-00-12-34-58#SIM800+webasto"); // индивидуальный номер для народмона. придумайте свой !!!!!!!!!!
          Serial.print("\n#Temp1#"), Serial.print(Temp0);       
          Serial.print("\n#Temp2#"), Serial.print(Temp1);       
          Serial.print("\n#Temp3#"), Serial.print(Temp2);       
          Serial.print("\n#Vbat#"),  Serial.print(Vbat);        
          Serial.println("\n##");      // обязательный параметр окончания пакета данных
          delay(500);  // и шлем на сервер 
-         SIM800.print("#SI-M8-00-12-34-58#SIM800+Sensor"); // индивидуальный номер для народмона см выше.
+         SIM800.print("#SI-M8-00-12-34-58#SIM800+webasto"); // индивидуальный номер для народмона см выше.
          if (Temp0 > -40 && Temp0 < 54) SIM800.print("\n#Temp1#"), SIM800.print(Temp0);       
          if (Temp1 > -40 && Temp1 < 54) SIM800.print("\n#Temp2#"), SIM800.print(Temp1);       
          if (Temp2 > -40 && Temp2 < 54) SIM800.print("\n#Temp3#"), SIM800.print(Temp2);       
