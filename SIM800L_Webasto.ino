@@ -45,14 +45,14 @@ void loop() {
   if (SIM800.available()) { // если что-то пришло от SIM800 в направлении Ардуино
     while (SIM800.available()) k = SIM800.read(), at += char(k),delay(1); // набиваем в переменную at
     
-           if (at.indexOf("+CLIP: \"+375000000001\",") > -1){ // реакция на входящий звонок
+           if (at.indexOf("+CLIP: \"+375000000001\",") > -1){ // реакция на входящий звонок с номера 1
       delay(50), SIM800.println("ATA"), pin[0]=0, pin[1]=0,pin[2]=0, poz=0, modem=10;
       delay(50),SIM800.println("AT+VTS=\"3,5,7\""), Serial.println("Incoming call 1");
 
-    } else if (at.indexOf("+CLIP: \"+375000000002\",") > -1){ // реакция на входящий звонок
-    if (heating == false){ 
+    } else if (at.indexOf("+CLIP: \"+375000000002\",") > -1){ // реакция на входящий звонок с номера 2
+    if (heating == false){ // если вебаста выключена то включаем ее сразу
                   delay(50), SIM800.println("ATH0"), Timer = 60, webastoON();
-                         } else {
+                         } else { // если включена то ждем 2 гудка и выключаем 
                   delay(10000), SIM800.println("ATH0"), webastoOFF();
                                 }
             
