@@ -50,8 +50,9 @@ void loop() {
       delay(50),SIM800.println("AT+VTS=\"3,5,7\""), Serial.println("Incoming call 1");
 
     } else if (at.indexOf("+CLIP: \"+375000000002\",") > -1){ // реакция на входящий звонок
-      delay(50), SIM800.println("ATH0"), Timer = 60, webastoON();
-
+    if (heating == false) delay(50), SIM800.println("ATH0"), Timer = 60, webastoON();
+    if (heating == true) delay(10000), SIM800.println("ATH0"), webastoOFF();
+            
     } else if (at.indexOf("NO CARRIER") > -1){modem=0;
     } else if (at.indexOf("+CME ERROR:") > -1){SIM800_reset();
     } else if (at.indexOf("+DTMF: 1") > -1) {pin[poz]=1, poz++; 
