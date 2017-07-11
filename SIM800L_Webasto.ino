@@ -69,7 +69,7 @@ void loop() {
     } else if (at.indexOf("+DTMF: 9") > -1) {pin[poz]=9, poz++; 
 //  } else if (at.indexOf("+DTMF: 0") > -1) {pin[poz]=0, poz++;
     } else if (at.indexOf("+DTMF: *") > -1) {pin[0]=0, pin[1]=0, pin[2]=0, poz=0, delay(100), SIM800.println("AT+VTS=\"9\""); 
-    } else if (at.indexOf("+DTMF: #") > -1) {pin[poz]=1, poz++, Serial.println("#"), SMS_send = true;                     
+    } else if (at.indexOf("+DTMF: #") > -1) {Serial.println("#"), SMS_send = true;                     
     } else if (at.indexOf("+CMTI: \"SM\",") > -1) {Serial.println(at), SIM800.println("AT+CMGR=1"), delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20);  
     } else if (at.indexOf("123starting10") > -1 ) {Timer = 60, webastoON();
     } else if (at.indexOf("123starting20") > -1 ) {Timer = 120, webastoON();
