@@ -117,6 +117,7 @@ void SMS_Send(){                                              // SMS sending fun
      SIM800.print("\n Timer: "),      SIM800.print(Timer/6),    SIM800.print(" min."); 
      SIM800.print("\n VbatStart: "),  SIM800.print(VbatStart),  SIM800.print(" V.");
      SIM800.print("\n Vbat 2 min: "), SIM800.print(Vbat),       SIM800.print(" V.");
+     SIM800.print("\n Uptime: "), SIM800.print(millis()/3600000), SIM800.print(" H.");
      SIM800.print((char)26);                                  // end with special characters
                }
                 
@@ -139,7 +140,7 @@ void detection()   {                      // perform the action every 10 seconds
     if (Timer > 0 ) Timer--;                             // we subtract one from the timer
     if (heating == true && Timer <1) heatingstop();      // if the timer is empty, turn off the warm-up
     if (heating == true && Vbat < 10.0) heatingstop();   // if the voltage drops below 10 volts, turn off the warm-up
-    if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (30), digitalWrite(ACTIV_Pin, LOW);  // flashing LED
+    if (heating == false && digitalRead(Feedback_Pin) == LOW) digitalWrite(ACTIV_Pin, HIGH), delay (30), digitalWrite(ACTIV_Pin, LOW); 
         OLED_print();
                    }             
                    
