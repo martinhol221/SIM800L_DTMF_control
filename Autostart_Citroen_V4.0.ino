@@ -70,10 +70,15 @@ void loop() {
     while (SIM800.available()) k = SIM800.read(), at += char(k), delay(1); // we write into the variable at
     
     if (at.indexOf("+CLIP: \"+375290000000\",") > -1){   // <- enter your phone number
-      delay(50), SIM800.println("ATA"),pin[0]=0,pin[1]=0,pin[2]=0,poz=0;
-      delay(50),SIM800.println("AT+VTS=\"3,5,7\"");
+      delay(50);
+      SIM800.println("ATA");                          // accept a challenge    
+      pin[0]=0, pin[1]=0, pin[2]=0, poz=0, delay(50); // reset the pin code
+      SIM800.println("AT+VTS=\"3,5,7\"");             // ringtone
+      
     } else if (at.indexOf("+CLIP: \"+375290000001\",") > -1){ // <- enter your phone number
-      delay(50), SIM800.println("ATH0"), Timer = 60, enginestart(); 
+      delay(50);
+      SIM800.println("ATH0");                         // reject a call
+      Timer = 60, enginestart();                      // set the timer to 60 (600 seconds), start the engine
  // } else if (at.indexOf("+CME ERROR:") > -1){SIM800_reset();
     } else if (at.indexOf("+DTMF: 1") > -1) {pin[poz]=1, poz++; 
     } else if (at.indexOf("+DTMF: 2") > -1) {pin[poz]=2, poz++; 
