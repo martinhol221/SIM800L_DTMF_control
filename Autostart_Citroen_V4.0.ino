@@ -2,19 +2,19 @@
 for the car Citroen C5 2.0 HDI 2003 with automatic transmission */
 #include <SoftwareSerial.h>
 #include <DallasTemperature.h>
-SoftwareSerial SIM800(8, 7);    // RX, TX
-#define ONE_WIRE_BUS 9          // pin 9 as sensor connection bus DS18B20
+SoftwareSerial SIM800(6, 5);    // RX, TX
+#define ONE_WIRE_BUS 2          // pin 2 as sensor connection bus DS18B20
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
 
-#define STARTER_Pin 11  // on the starter relay, via a transistor with the 11th contact ARDUINO
-#define ON_Pin 12       // on the ignition relay, via the transistor from the 12th contact ARDUINO
-#define ACTIV_Pin 10    // on the LED through the transistor, from the 10th pin to indicate activity 
-#define BAT_Pin A3      // to the battery, through a voltage divider of 39 kΩ / 11 kΩ
-#define Feedback_Pin A2 // on the ignition wire after the relay, through the voltage divider 39 kOhm / 11 kOhm
-#define STOP_Pin A1     // to the brake pedal wire, through a 39 kOhm / 11 kΩ divider
-#define PSO_Pin A0      // contact for oil pressure sensor, through a 39 kOhm / 11 kΩ divider
-#define RESET_Pin 6     // reset contact RES SIM800L
+#define STARTER_Pin 8   // on the starter relay, via a transistor with the 8 th contact ARDUINO
+#define ON_Pin 9        // on the ignition relay, via the transistor from the 9th contact ARDUINO
+#define ACTIV_Pin 13    // on the LED through the transistor, from the 13th pin to indicate activity 
+#define BAT_Pin A0      // to the battery, through a voltage divider of 39 kΩ / 11 kΩ
+#define Feedback_Pin A1 // on the ignition wire after the relay, through the voltage divider 39 kOhm / 11 kOhm
+#define STOP_Pin A2     // to the brake pedal wire, through a 39 kOhm / 11 kΩ divider
+#define PSO_Pin A3      // contact for oil pressure sensor, through a 39 kOhm / 11 kΩ divider
+#define RESET_Pin 5     // reset contact RES SIM800L
 #define K_line_RX 0     // to 1-pin chip L9637D
 #define K_line_TX 1     // to 4-pin chip L9637D
 
@@ -103,7 +103,7 @@ if (heating == true && digitalRead(STOP_Pin)==1) heatingstop() ; //If the brake 
 
 void SMS_Send(){                                              // SMS sending function
      SIM800.println("AT+CMGS=\"+375290000002\""), delay(100); // indicate recipient's phone number
-     SIM800.print("rev. SIM800 v 29.09 ");
+     SIM800.print("rev. SIM800L v 29.09.2017 ");
      SIM800.print("\n TempStart: "),  SIM800.print(TempStart),  SIM800.print(" grad.");
      SIM800.print("\n Temp 2 min: "), SIM800.print(TempDS),     SIM800.print(" grad.");
  //  SIM800.print("\n Temp.engine: "),SIM800.print(Temp1),      SIM800.print(" grad.");
@@ -145,7 +145,7 @@ SIM800.println("AT+VTS=\"7,7\""), TempStart = TempDS, VbatStart = Vbat ;
 int count = 2;           // a variable that keeps the number of remaining attempts to run
 int StarterTime = 1000;  // storage variable starter operating time (1 sec for the first attempt)
 if (TempDS < 15)   StarterTime = 1200, count = 2;
-if (TempDS < 6)    StarterTime = 1500, count = 2;
+if (TempDS < 5)    StarterTime = 1500, count = 2;
 if (TempDS < -5)   StarterTime = 2000, count = 3;
 if (TempDS < -10)  StarterTime = 3000, count = 3;
 if (TempDS < -15)  StarterTime = 5000, count = 4;
@@ -159,8 +159,8 @@ if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try
     digitalWrite(ON_Pin, LOW), delay (3000), digitalWrite(ON_Pin, HIGH), delay (5000); 
     
     // depending on the temperature, we again turn off and turn on the ignition (actual for the diesel engine)  
-    if (TempDS < -5)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (5000);
-    if (TempDS < -15) digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (5000);
+    if (TempDS < -5)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (6000);
+    if (TempDS < -15) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
 
     ODB_read();                                           //  read data from ODB  
     
