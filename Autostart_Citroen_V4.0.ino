@@ -7,6 +7,13 @@ SoftwareSerial SIM800(6, 5);    // RX, TX
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
 
+#include <OLED_I2C.h>           // Connect the library for OLED display
+OLED  myOLED(SDA, SCL, 8);
+extern uint8_t MediumNumbers[];
+extern uint8_t RusFont[];
+extern uint8_t SmallFont[];
+
+
 #define STARTER_Pin 8   // on the starter relay, via a transistor with the 8 th contact ARDUINO
 #define ON_Pin 9        // on the ignition relay, via the transistor from the 9th contact ARDUINO
 #define ACTIV_Pin 13    // on the LED through the transistor, from the 13th pin to indicate activity 
@@ -50,6 +57,9 @@ void setup() {
   pinMode(STARTER_Pin, OUTPUT);  // pin to the output of the starter relay
   pinMode(RESET_Pin, OUTPUT);    // pin to the output to reboot the GSM module
   SIM800.begin(9600);            // adjust the speed of communication between Arduino and Sim 800
+  pinMode(K_line_RX, INPUT); 
+  pinMode(K_line_TX, OUTPUT); 
+  myOLED.begin();                // Initialize the OLED display
   SIM800_reset();                // reset the GSM modem after power-up
              }
 
