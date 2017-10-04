@@ -24,6 +24,7 @@ extern uint8_t SmallFont[];
 #define RESET_Pin 5     // reset contact RES SIM800L
 #define K_line_RX 0     // to 1-pin chip L9637D
 #define K_line_TX 1     // to 4-pin chip L9637D
+#define FIRST_P_Pin 10  // the first position of the ignition key
 
 float TempDS;            // temperature sensor DS18B20
 float Vbat;              // vehicle power supply voltage variable
@@ -55,6 +56,7 @@ void setup() {
   pinMode(ACTIV_Pin, OUTPUT);    // indicate the contact on the output for the LED indication
   pinMode(ON_Pin, OUTPUT);       // indicate the pin to the output to the ignition relay
   pinMode(STARTER_Pin, OUTPUT);  // pin to the output of the starter relay
+  pinMode(FIRST_P_Pin , OUTPUT); // pin to the output of the starter relay
   pinMode(RESET_Pin, OUTPUT);    // pin to the output to reboot the GSM module
   SIM800.begin(9600);            // adjust the speed of communication between Arduino and Sim 800
   pinMode(K_line_RX, INPUT); 
@@ -168,7 +170,7 @@ if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try
  {  /* if the voltage is more than 10 volts, the ignition is switched off, the "STOP" pedal is not 
   pressed and there are attempts to start ..*/
     count--;                       // reduce by one the number of remaining attempts to run
-    digitalWrite(ACTIV_Pin, HIGH); // Light the LED
+    digitalWrite(ACTIV_Pin, HIGH), digitalWrite(FIRST_P_Pin, HIGH); // Light the LED
     digitalWrite(ON_Pin, LOW), delay (3000), digitalWrite(ON_Pin, HIGH), delay (5000); 
     
     // depending on the temperature, we again turn off and turn on the ignition (actual for the diesel engine)  
@@ -197,7 +199,7 @@ if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try
         }
     else                                                  // the start did not happen, repeat the cycle
         { 
-        heating = false, digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW);
+        heating = false, digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), digitalWrite(FIRST_P_Pin, LOW);
         StarterTime = StarterTime + 200;                   // increase the time of the next start by 0.2 sec.
         SIM800.println("AT+VTS=\"8,8,8\""), delay(3000);
         }
@@ -206,8 +208,8 @@ SIM800.println("ATH0");                // break the call
                   }
 
 void heatingstop() {                   // stop function
-    digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), heating= false;
-    TempStart= -55, VbatStart = -13;   // for SMS of the report at unsuccessful start
+    digitalWrite(ON_Pin, LOW), digitalWrite(ACTIV_Pin, LOW), digitalWrite(FIRST_P_Pin, LOW);
+    heating= false, TempStart= -55, VbatStart = -13;   // for SMS of the report at unsuccessful start
     Timer = 0, SIM800.println("AT+VTS=\"8,8,8\""), delay (1500);
                    }
 
