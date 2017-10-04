@@ -24,7 +24,7 @@ extern uint8_t SmallFont[];
 #define RESET_Pin 5     // reset contact RES SIM800L
 #define K_line_RX 0     // to 1-pin chip L9637D
 #define K_line_TX 1     // to 4-pin chip L9637D
-#define FIRST_P_Pin 10  // the first position of the ignition key
+#define FIRST_P_Pin 11  // the first position of the ignition key
 
 float TempDS;            // temperature sensor DS18B20
 float Vbat;              // vehicle power supply voltage variable
