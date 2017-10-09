@@ -63,6 +63,7 @@ void setup() {
   pinMode(K_line_RX, INPUT); 
   pinMode(K_line_TX, OUTPUT); 
 //  myOLED.begin();                // Initialize the OLED display
+  if (digitalRead(STOP_Pin) == HIGH) Serial.begin(9600); // entering the debug mode
   SIM800_reset();                // reset the GSM modem after power-up
              }
 
@@ -136,7 +137,10 @@ void SMS_Send(){                                              // SMS sending fun
                 
 void OLED_print(){
                 // will be implemented later
-                 }
+Serial.print ("    TempDS: "), Serial.print (TempDS), Serial.print ("  ||  Vbat: "), Serial.print (Vbat);    
+Serial.print (" || Timer: "),  Serial.print (Timer),  Serial.print ("  || Timer2: "), Serial.print (Timer2);   
+Serial.println ("");                  
+}
 
 
 void detection()   {                      // perform the action every 10 seconds
@@ -158,7 +162,7 @@ void detection()   {                      // perform the action every 10 seconds
     if (heating == true && Timer <1) heatingstop();               // if the timer is empty, turn off the warm-up
     if (heating == true && Vbat < 10.0) heatingstop();            // if the voltage drops below 10 volts, turn off the warm-up
     if (heating == false && digitalRead(Feedback_Pin) == LOW) digitalWrite(ACTIV_Pin, HIGH), delay (30), digitalWrite(ACTIV_Pin, LOW); 
-        OLED_print();
+      //  OLED_print();
                    }             
                    
  
