@@ -203,16 +203,13 @@ if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try
     digitalWrite(STARTER_Pin, LOW),  delay (7000);        // disable starter relay, wait 7 seconds
  
     ODB_read();                                           //  read the data from ODB after the start
-   
-//  if (digitalRead(PSO_Pin) == LOW)  //check the success of starting the engine speed by voltage from the sensor  /- А - /
-   
-//  if (digitalRead(PSO_Pin) == HIGH) //check the success of starting the engine speed by voltage from the sensor  /- B - /
-   
     Vbat = analogRead(BAT_Pin);           // we measure ADC
-    Vbat = Vbat / m ;                     // dividing the value of the ADC by the module, we obtain the voltage    /- C - /
-    if (Vbat > 12.00)                     // monitoring of starting the motor by voltage   
+    Vbat = Vbat / m ;                     // dividing the value of the ADC by the module, we obtain the voltage 
    
-  //  if (PMM > 0) // check the success of starting on engine speed from OBD                                         /- D - /
+  //  if (digitalRead(PSO_Pin) == LOW)  // check the success of starting the engine speed by voltage from the sensor  /- А - /
+  //  if (digitalRead(PSO_Pin) == HIGH) // check the success of starting the engine speed by voltage from the sensor  /- B - /
+      if (Vbat > 12.00)                 // monitoring of starting the motor by voltage                                /- C - /
+  //  if (PMM > 0)                      // check the success of starting on engine speed from OBD                     /- D - /
         { 
         heating = true, digitalWrite(ACTIV_Pin, HIGH), SIM800.println("AT+VTS=\"7,2,1,4,9\""), delay(3000);
         break;                           // we consider the start to be successful, we leave the engine start cycle
