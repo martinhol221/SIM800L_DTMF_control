@@ -61,10 +61,16 @@ void setup() {
   pinMode(FIRST_P_Pin , OUTPUT); // pin to the output of the starter relay
   pinMode(RESET_Pin, OUTPUT);    // pin to the output to reboot the GSM module
   SIM800.begin(9600);            // adjust the speed of communication between Arduino and Sim 800
+
+  if (digitalRead(STOP_Pin) == HIGH){ 
+//  myOLED.begin();                   // Initialize the OLED display  
+  debug = true;                       // entering the debug mode
+  Serial.begin(9600);
+  Serial.println("Debug mode "); 
+                             } else {
   pinMode(K_line_RX, INPUT); 
   pinMode(K_line_TX, OUTPUT); 
-//  myOLED.begin();                // Initialize the OLED display
-  if (digitalRead(STOP_Pin) == HIGH) debug = true, Serial.begin(9600); // entering the debug mode
+                                    }
   SIM800_reset();                // reset the GSM modem after power-up
              }
 
