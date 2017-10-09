@@ -6,13 +6,13 @@ SoftwareSerial SIM800(6, 5);    // RX, TX
 #define ONE_WIRE_BUS 2          // pin 2 as sensor connection bus DS18B20
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
-
+/*
 #include <OLED_I2C.h>           // Connect the library for OLED display
 OLED  myOLED(SDA, SCL, 8);
 extern uint8_t MediumNumbers[];
 extern uint8_t RusFont[];
 extern uint8_t SmallFont[];
-
+*/
 
 #define STARTER_Pin 8   // on the starter relay, via a transistor with the 8 th contact ARDUINO
 #define ON_Pin 9        // on the ignition relay, via the transistor from the 9th contact ARDUINO
@@ -40,6 +40,7 @@ int pac =0;
 int poz = 0;            // position in the pin-code array
 int pin[20];            // pin input array
 int Timer = 0;          // countdown timer
+int Timer2 = 360;       // Hour timer (60 sec. x 60 min. / 10 = 360 ) 
 
 byte  init_obd[] = {0xC1,0x33,0xF1,0x81,0x66};      // initialization K-line     C1 33 F1 81 66 
 byte temp1_obd[] = {0xC2,0x33,0xF1,0x01,0x05,0xEC}; // antifreeze temp. request  C2 33 F1 01 05 EC
@@ -61,7 +62,7 @@ void setup() {
   SIM800.begin(9600);            // adjust the speed of communication between Arduino and Sim 800
   pinMode(K_line_RX, INPUT); 
   pinMode(K_line_TX, OUTPUT); 
-  myOLED.begin();                // Initialize the OLED display
+//  myOLED.begin();                // Initialize the OLED display
   SIM800_reset();                // reset the GSM modem after power-up
              }
 
@@ -145,10 +146,17 @@ void detection()   {                      // perform the action every 10 seconds
     Vbat = analogRead(BAT_Pin);           // we measure ADC
     Vbat = Vbat / m ;                     // dividing the value of the ADC by the module, we obtain the voltage
     
-    if (Timer == 48 && sms_report == true) SMS_Send();   // we send SMS 2 minutes after the start (60-6*2=48)
-    if (Timer > 0 ) Timer--;                             // we subtract one from the timer
-    if (heating == true && Timer <1) heatingstop();      // if the timer is empty, turn off the warm-up
-    if (heating == true && Vbat < 10.0) heatingstop();   // if the voltage drops below 10 volts, turn off the warm-up
+    if (Timer == 48 && sms_report == true) SMS_Send();            // we send SMS 2 minutes after the start (60-6*2=48)
+    if (Timer > 0 ) Timer--;                                      // we subtract one from the timer
+    
+    //  Autostart of the engine when the temperature drops below - 18 degrees and SMS notification at - 25.
+    if (Timer2 == 2 && TempDS < -18 && TempDS != -127) Timer2 = 1080, Timer = 120, enginestart();  
+    if (Timer2 == 1 && TempDS < -25 && TempDS != -127) Timer2 = 360, SMS_Send();    
+        Timer2--;                                                 // we subtract one from the timer
+    if (Timer2 < 0) Timer2 = 1080;                                // postpone checking for 3 hours (60x60x3/10 = 1080)
+  
+    if (heating == true && Timer <1) heatingstop();               // if the timer is empty, turn off the warm-up
+    if (heating == true && Vbat < 10.0) heatingstop();            // if the voltage drops below 10 volts, turn off the warm-up
     if (heating == false && digitalRead(Feedback_Pin) == LOW) digitalWrite(ACTIV_Pin, HIGH), delay (30), digitalWrite(ACTIV_Pin, LOW); 
         OLED_print();
                    }             
