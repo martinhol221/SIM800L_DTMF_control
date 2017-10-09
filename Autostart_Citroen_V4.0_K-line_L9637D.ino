@@ -52,6 +52,7 @@ unsigned long Time1 = 0;
 
 bool heating = false;    // state variable warm-up mode
 bool sms_report = true;  // sending SMS report enabled
+bool debug = false;      // 
 
 void setup() {
   pinMode(ACTIV_Pin, OUTPUT);    // indicate the contact on the output for the LED indication
@@ -63,7 +64,7 @@ void setup() {
   pinMode(K_line_RX, INPUT); 
   pinMode(K_line_TX, OUTPUT); 
 //  myOLED.begin();                // Initialize the OLED display
-  if (digitalRead(STOP_Pin) == HIGH) Serial.begin(9600); // entering the debug mode
+  if (digitalRead(STOP_Pin) == HIGH) debug = true, Serial.begin(9600); // entering the debug mode
   SIM800_reset();                // reset the GSM modem after power-up
              }
 
@@ -122,7 +123,7 @@ if (heating == true && digitalRead(STOP_Pin)==1) heatingstop() ; //If the brake 
 
 void SMS_Send(){                                              // SMS sending function
      SIM800.println("AT+CMGS=\"+375290000002\""), delay(100); // indicate recipient's phone number
-     SIM800.print("rev. SIM800L v 29.09.2017 ");
+     SIM800.print("rev. SIM800L v 09.10.2017 ");
      SIM800.print("\n TempStart: "),  SIM800.print(TempStart),  SIM800.print(" grad.");
      SIM800.print("\n Temp 2 min: "), SIM800.print(TempDS),     SIM800.print(" grad.");
  //  SIM800.print("\n Temp.engine: "),SIM800.print(Temp1),      SIM800.print(" grad.");
@@ -133,6 +134,7 @@ void SMS_Send(){                                              // SMS sending fun
      SIM800.print("\n Vbat 2 min: "), SIM800.print(Vbat),       SIM800.print(" V.");
      SIM800.print("\n Uptime: "), SIM800.print(millis()/3600000), SIM800.print(" H.");
      SIM800.print((char)26);                                  // end with special characters
+     if (debug == true) Serial.println ("Sending sms successful.");
                }
                 
 void OLED_print(){
@@ -162,7 +164,7 @@ void detection()   {                      // perform the action every 10 seconds
     if (heating == true && Timer <1) heatingstop();               // if the timer is empty, turn off the warm-up
     if (heating == true && Vbat < 10.0) heatingstop();            // if the voltage drops below 10 volts, turn off the warm-up
     if (heating == false && digitalRead(Feedback_Pin) == LOW) digitalWrite(ACTIV_Pin, HIGH), delay (30), digitalWrite(ACTIV_Pin, LOW); 
-      //  OLED_print();
+    if (debug == true) OLED_print();
                    }             
                    
  
