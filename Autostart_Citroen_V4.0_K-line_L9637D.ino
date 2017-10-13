@@ -2,7 +2,7 @@
 for the car Citroen C5 2.0 HDI 2003 with automatic transmission */
 #include <SoftwareSerial.h>
 #include <DallasTemperature.h>
-SoftwareSerial SIM800(6, 5);    // RX, TX
+SoftwareSerial SIM800(7, 6);    // RX, TX
 #define ONE_WIRE_BUS 2          // pin 2 as sensor connection bus DS18B20
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
