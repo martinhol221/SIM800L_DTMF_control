@@ -162,8 +162,8 @@ void detection()   {                      // perform the action every 10 seconds
     if (Timer > 0 ) Timer--;                                      // we subtract one from the timer
     
     //  Autostart of the engine when the temperature drops below - 18 degrees and SMS notification at - 25.
-    if (Timer2 == 2 && TempDS < -18 && TempDS != -127) Timer2 = 1080, Timer = 120, enginestart();  
-    if (Timer2 == 1 && TempDS < -25 && TempDS != -127) Timer2 = 360, SMS_Send();    
+ //   if (Timer2 == 2 && TempDS < -18 && TempDS != -127) Timer2 = 1080, Timer = 120, enginestart();  
+ //   if (Timer2 == 1 && TempDS < -25 && TempDS != -127) Timer2 = 360, SMS_Send();    
         Timer2--;                                                 // we subtract one from the timer
     if (Timer2 < 0) Timer2 = 1080;                                // postpone checking for 3 hours (60x60x3/10 = 1080)
   
@@ -184,7 +184,7 @@ if (TempDS < 5)    StarterTime = 1500, count = 2;
 if (TempDS < -5)   StarterTime = 2000, count = 3;
 if (TempDS < -10)  StarterTime = 3000, count = 3;
 if (TempDS < -15)  StarterTime = 5000, count = 4;
-if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try to start 
+//if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try to start 
  
  while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && digitalRead(STOP_Pin) == LOW && count > 0) 
  {  /* if the voltage is more than 10 volts, the ignition is switched off, the "STOP" pedal is not 
@@ -203,8 +203,10 @@ if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try
     digitalWrite(STARTER_Pin, LOW),  delay (7000);        // disable starter relay, wait 7 seconds
  
     ODB_read();                                           //  read the data from ODB after the start
-    Vbat = analogRead(BAT_Pin);           // we measure ADC
-    Vbat = Vbat / m ;                     // dividing the value of the ADC by the module, we obtain the voltage 
+    Vbat = analogRead(BAT_Pin);                           // we measure ADC
+    Vbat = Vbat + analogRead(BAT_Pin), delay (300); 
+    Vbat = Vbat + analogRead(BAT_Pin), delay (300);
+    Vbat = Vbat / m / 3 ;                                // dividing the value of the ADC by the module, we obtain the voltage 
    
   //  if (digitalRead(PSO_Pin) == LOW)  // check the success of starting the engine speed by voltage from the sensor  /- А - /
   //  if (digitalRead(PSO_Pin) == HIGH) // check the success of starting the engine speed by voltage from the sensor  /- B - /
