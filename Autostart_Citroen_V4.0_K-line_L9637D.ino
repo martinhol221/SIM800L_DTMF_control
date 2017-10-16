@@ -34,7 +34,7 @@ float VbatStart= -12;    // the voltage at the time of the last start
 
 int Temp1 = 75;         // engine coolant temperature obtained from OBD
 int Temp2 = 25;         // air temperature in the intake manifold obtained from the OBD
-int PMM = 100;          // engine revs obtained from OBD
+unsigned long PMM = 0;  // engine revs obtained from OBD
 int k = 0;
 int pac =0;
 int poz = 0;            // position in the pin-code array
@@ -194,13 +194,18 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
     digitalWrite(ON_Pin, LOW), delay (3000), digitalWrite(ON_Pin, HIGH), delay (5000); 
     
     // depending on the temperature, we again turn off and turn on the ignition (actual for the diesel engine)  
-    if (TempDS < -5 && tempds0 != -127)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (6000);
-    if (TempDS < -15 && tempds0 != -127) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
-
-    ODB_read();                                           //  read data from ODB  
+    if (TempDS < -5 &&  TempDS != -127)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (6000);
+    if (TempDS < -15 && TempDS != -127) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
     
+  //  ODB_read();  
+  //  read data from ODB  
+    PMM = 0;
+    attachInterrupt(1, PMM_count, CHANGE); 
+   
     digitalWrite(STARTER_Pin, HIGH), delay (StarterTime); // turn on the starter relay
     digitalWrite(STARTER_Pin, LOW),  delay (7000);        // disable starter relay, wait 7 seconds
+
+    detachInterrupt(1);
  
     ODB_read();                                           //  read the data from ODB after the start
     Vbat = analogRead(BAT_Pin);                           // we measure ADC
@@ -211,7 +216,7 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
   //  if (digitalRead(PSO_Pin) == LOW)  // check the success of starting the engine speed by voltage from the sensor  /- А - /
   //  if (digitalRead(PSO_Pin) == HIGH) // check the success of starting the engine speed by voltage from the sensor  /- B - /
       if (Vbat > 12.00)                 // monitoring of starting the motor by voltage                                /- C - /
-  //  if (PMM > 0)                      // check the success of starting on engine speed from OBD                     /- D - /
+  //  if (PMM > 20)                     // check the success of starting on engine speed from OBD                     /- D - /
         { 
         heating = true, digitalWrite(ACTIV_Pin, HIGH), SIM800.println("AT+VTS=\"7,2,1,4,9\""), delay(3000);
         break;                           // we consider the start to be successful, we leave the engine start cycle
@@ -232,7 +237,10 @@ void heatingstop() {                   // stop function
     Timer = 0, SIM800.println("AT+VTS=\"8,8,8\""), delay (1500);
                    }
 
+void PMM_count() {
+                PMM++;        
 
+                 }
 
 
 
