@@ -199,12 +199,13 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
     
   //  ODB_read();  
   //  read data from ODB  
+     
+    digitalWrite(STARTER_Pin, HIGH);
+    delay (StarterTime);                                 // turn on the starter relay
+    digitalWrite(STARTER_Pin, LOW);                      // disable starter relay,
     PMM = 0;
-    attachInterrupt(1, PMM_count, CHANGE); 
-   
-    digitalWrite(STARTER_Pin, HIGH), delay (StarterTime); // turn on the starter relay
-    digitalWrite(STARTER_Pin, LOW),  delay (7000);        // disable starter relay, wait 7 seconds
-
+    attachInterrupt(1, PMM++, CHANGE); 
+    delay (7000);                                        //  wait 7 seconds
     detachInterrupt(1);
  
     ODB_read();                                           //  read the data from ODB after the start
@@ -236,12 +237,12 @@ void heatingstop() {                   // stop function
     heating= false, TempStart= -55, VbatStart = -13;   // for SMS of the report at unsuccessful start
     Timer = 0, SIM800.println("AT+VTS=\"8,8,8\""), delay (1500);
                    }
-
+/*
 void PMM_count() {
                 PMM++;        
 
                  }
-
+*/
 
 
 void ODB_read()    {                                            // Reading the bus K-line chip L9637D
