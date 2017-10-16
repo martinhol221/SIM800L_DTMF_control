@@ -194,8 +194,8 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
     digitalWrite(ON_Pin, LOW), delay (3000), digitalWrite(ON_Pin, HIGH), delay (5000); 
     
     // depending on the temperature, we again turn off and turn on the ignition (actual for the diesel engine)  
-    if (TempDS < -5)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (6000);
-    if (TempDS < -15) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
+    if (TempDS < -5 && tempds0 != -127)  digitalWrite(ON_Pin, LOW), delay (2000), digitalWrite(ON_Pin, HIGH), delay (6000);
+    if (TempDS < -15 && tempds0 != -127) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
 
     ODB_read();                                           //  read data from ODB  
     
