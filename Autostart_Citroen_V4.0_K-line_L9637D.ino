@@ -204,7 +204,7 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
     delay (StarterTime);                                 // turn on the starter relay
     digitalWrite(STARTER_Pin, LOW);                      // disable starter relay,
     PMM = 0;
-    attachInterrupt(1, PMM++, CHANGE); 
+    attachInterrupt(1, PMM_count, CHANGE); 
     delay (7000);                                        //  wait 7 seconds
     detachInterrupt(1);
  
@@ -216,7 +216,7 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
    
   //  if (digitalRead(PSO_Pin) == LOW)  // check the success of starting the engine speed by voltage from the sensor  /- А - /
   //  if (digitalRead(PSO_Pin) == HIGH) // check the success of starting the engine speed by voltage from the sensor  /- B - /
-      if (Vbat > 12.00)                 // monitoring of starting the motor by voltage                                /- C - /
+      if (Vbat > 12.50)                 // monitoring of starting the motor by voltage                                /- C - /
   //  if (PMM > 20)                     // check the success of starting on engine speed from OBD                     /- D - /
         { 
         heating = true, digitalWrite(ACTIV_Pin, HIGH), SIM800.println("AT+VTS=\"7,2,1,4,9\""), delay(3000);
@@ -237,12 +237,11 @@ void heatingstop() {                   // stop function
     heating= false, TempStart= -55, VbatStart = -13;   // for SMS of the report at unsuccessful start
     Timer = 0, SIM800.println("AT+VTS=\"8,8,8\""), delay (1500);
                    }
-/*
+
 void PMM_count() {
                 PMM++;        
-
                  }
-*/
+
 
 
 void ODB_read()    {                                            // Reading the bus K-line chip L9637D
