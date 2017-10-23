@@ -186,7 +186,7 @@ if (TempDS < -10)  StarterTime = 3000, count = 3;
 if (TempDS < -15)  StarterTime = 5000, count = 4;
 //if (TempDS < -20)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try to start 
  
- while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && digitalRead(STOP_Pin) == LOW && count > 0) 
+ while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && count > 0) 
  {  /* if the voltage is more than 10 volts, the ignition is switched off, the "STOP" pedal is not 
   pressed and there are attempts to start ..*/
     count--;                       // reduce by one the number of remaining attempts to run
@@ -200,7 +200,16 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
   //  ODB_read();  
   //  read data from ODB  
      
-    digitalWrite(STARTER_Pin, HIGH);
+  if (digitalRead(STOP_Pin) == LOW) {      // or (digitalRead(STOP_Pin) == HIGH) for invert
+                                    digitalWrite(STARTER_Pin, HIGH);
+                                    } 
+                                    else
+                                    {
+                                    heatingstop()
+                                    SMS_Send();
+                                    break; 
+                                    }
+  
     delay (StarterTime);                                 // turn on the starter relay
     digitalWrite(STARTER_Pin, LOW);                      // disable starter relay,
     PMM = 0;
@@ -245,73 +254,5 @@ void PMM_count() {
 
 
 void ODB_read()    {                                            // Reading the bus K-line chip L9637D
-                  /*
-if (pac == 0) {
-  digitalWrite(K_line_TX, HIGH), delay(300); 
-  digitalWrite(K_line_TX, LOW), delay(25);   
-  digitalWrite(K_line_TX, HIGH), delay(25);                     //-------------_-
-  Serial.begin(10400);                                          // bus speed setting ISO 14230-4 KWP 10.4 Kbaud
-  for(int i=0;i<5;i++) Serial.write(init_obd[i]), delay (10);   // send the initialization command K-line bus
-  delay(100);  
-  myOLED.setFont(SmallFont), myOLED.print("SEND> C1 33 F1 81 66", 0, 0), myOLED.update(); 
-               }
- 
-  char byfer[30];
-  n = Serial.available();
-  if (n > 0) {  pac++;
-  for (int i=0;i<n;i++) byfer[i]=Serial.read();
-  myOLED.setFont(RusFont), myOLED.print("ghbyznj ,fqn", 0, 10), myOLED.printNumI(n, 80, 10);
-  myOLED.print("Gfrtnjd", 0, 44), myOLED.printNumI(pac,60,44), myOLED.update(); 
-  String byte8 = String(byfer[8],DEC);   // С1 (HEX) = 193 (DEC) // С1 successful response
-  String byte10 = String(byfer[10],DEC); // 05 HEX = 05 DEC, 0F HEX = 15 DEC, 0C HEX = 12 DEC, 0D HEX = 13 DEC
-
-// if  (n == 5)   myOLED.setFont(SmallFont), myOLED.print("EHO>", 35, 0), myOLED.update(); 
-
-if  (n == 12 && byte8 ==  "193")   {  // wait for bus initialization
-                                        myOLED.setFont(SmallFont), myOLED.print("83 F1 10 C1 E9 8F BD ", CENTER, 20), myOLED.update(); 
-                                        Serial.flush();   
-                                        for(int i=0;i<6;i++) Serial.write(temp1_obd[i]), delay (10);  
-                                        delay(100);
-                                         }
- if (n == 13  && byte10 ==  "5" )       { // read engine antifreeze temperature from the 12th byte of the package
-                                        s = String(byfer[11],DEC);
-                                        Temp1 = s.toInt() - 40;  
-                                        for(int i=0;i<6;i++) Serial.write(temp2_obd[i]), delay (10); 
-                                        delay(100);
-                                        }
-
-                                          
- if (n == 13  && byte10 ==  "15" )     {  // read the air temperature at the inlet of the 12th byte of the packet
-                                        s = String(byfer[11],DEC); 
-                                        Temp2 = s.toInt() - 40; 
-                                        for(int i=0;i<6;i++) Serial.write(pmm_obd[i]), delay (10);
-                                        delay(100);                          
-                                       }
-
-
- if (n == 14  && byte10 ==  "12" )     {  // read the engine speed from the 12th and 13th bytes of the packet
-                                        s = String(byfer[11],DEC);
-                                        int h = s.toInt();
-                                        s = String(byfer[12],DEC);
-                                        int l = s.toInt();
-                                        PMM = word(h, l)/4;
-                                        for(int i=0;i<6;i++) Serial.write(speed_obd[i]), delay (10);
-                                        delay(100);  
-                                        }
-                                          
-  if (n == 13  && byte10 ==  "13" )    {  // if we read the speed from the 12th byte of the packet
-                                        s = String(byfer[11],DEC);
-                                        SPEED = s.toInt();
-
-
-  myOLED.clrScr();
-  myOLED.setFont(MediumNumbers);
-  myOLED.printNumI(Temp1, RIGHT, 0), myOLED.printNumI(Temp2, RIGHT, 16), myOLED.printNumI(PMM, RIGHT, 32), myOLED.printNumI(SPEED, RIGHT, 48);
-  myOLED.setFont(RusFont);
-  myOLED.print("NTVGTHFNEHF LDBU", LEFT, 0), myOLED.print("NTVGTHFNEHF DJPL", LEFT, 20),myOLED.print("J<JHJNS LDBU", LEFT, 36), myOLED.print("CRJHJCNM FDNJ", LEFT, 54);
-  myOLED.update();
-                                       }
-                                          
-        }
-        */
+                  
                  }
