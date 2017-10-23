@@ -205,7 +205,7 @@ if (TempDS < -15)  StarterTime = 5000, count = 4;
                                     } 
                                     else
                                     {
-                                    heatingstop()
+                                    heatingstop();
                                     SMS_Send();
                                     break; 
                                     }
