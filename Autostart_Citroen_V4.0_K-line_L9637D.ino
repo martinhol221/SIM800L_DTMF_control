@@ -184,7 +184,7 @@ if (TempDS < 5 &&    TempDS != -127)  StarterTime = 1500, count = 2;
 if (TempDS < -5 &&   TempDS != -127)  StarterTime = 2000, count = 3;
 if (TempDS < -10 &&  TempDS != -127)  StarterTime = 3000, count = 3;
 if (TempDS < -15 &&  TempDS != -127)  StarterTime = 5000, count = 4;
-if (TempDS < -20 &&  TempDS != -127)  StarterTime = 0,    count = 0, SMS_Send(); // do not even try to start 
+if (TempDS < -20 &&  TempDS != -127)  StarterTime = 1,    count = 0, SMS_Send(); // do not even try to start 
  
  while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && count > 0) 
  {  /* if the voltage is more than 10 volts, the ignition is switched off, the "STOP" pedal is not 
