@@ -1,3 +1,4 @@
+// времнно не актуален
 /*Version 4.0 from 29 09 2017 with reading of parameters from the engine ECU according to ISO 14230-4 KWP 10.4 Kbaud 
 for the car Citroen C5 2.0 HDI 2003 with automatic transmission */
 #include <SoftwareSerial.h>
