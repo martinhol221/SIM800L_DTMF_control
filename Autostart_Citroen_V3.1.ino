@@ -50,9 +50,10 @@ void setup() {
   pinMode(STARTER_Pin, OUTPUT);    // указываем пин на выход доп реле стартера
   pinMode(RESET_Pin,   OUTPUT);    // указываем пин на выход для перезагрузки модуля
   pinMode(FIRST_P_Pin, OUTPUT);    // указываем пин на выход для доп реле первого положения замка зажигания
+  pinMode(WEBASTO_pin, OUTPUT);    // указываем пин на выход для доп реле вебасто
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Starting. | V3.2 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 09/11/2017"); 
+  Serial.println("Starting. | V3.1 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 10/11/2017"); 
   delay (2000);
   SIM800_reset();
              }
@@ -65,13 +66,12 @@ void SIM800_reset() {                                         // Call Ready
   SIM800.println("ATE1"),                    delay(50);        // отключаем режим ЭХА
   SIM800.println("AT+CLIP=1"),               delay (50);       // включаем определитель номера
   SIM800.println("AT+DDET=1"),               delay (50);       // включаем DTMF декдер
-  SIM800.println("AT+CMGF=1"),               delay (50);      // Включаем Текстовый режим СМС
-  SIM800.println("AT+CSCS=\"gsm\""),         delay (50);      // Выбираем кодировку СМС
+  SIM800.println("AT+CMGF=1"),               delay (50);       // Включаем Текстовый режим СМС
+  SIM800.println("AT+CSCS=\"gsm\""),         delay (50);       // Выбираем кодировку СМС
   SIM800.println("AT+CNMI=2,1,0,0,0") ,      delay (100);      // Разрешаем прием входящих СМС
-  SIM800.println("AT+DDET=1"),               delay (50);       // включаем DTMF декдер
   SIM800.println("AT+VTD=1"),                delay (50);       // Задаем длительность DTMF ответа
   SIM800.println("AT+CMEE=1"),               delay (50);       // Инфо о ошибках 
-  SIM800.println("AT+CMGDA=\"DEL ALL\""),    delay (300);      // Удаляем все СМС полученные ранее
+  SIM800.println("AT+CMGDA=\"DEL ALL\""),    delay (30);       // Удаляем все СМС полученные ранее
                    } 
 
 void loop() {
@@ -83,25 +83,25 @@ void loop() {
                                                      SIM800.println("ATA"), delay(100);
                                                      SIM800.println("AT+VTS=\"3,5,7\"");
                                                      pin= "";
-            
+/*            
     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
                                                      delay(50), SIM800.println("ATH0");
-                                                     Timer = 60, enginestart();
-            
+                                                     Timer = 60, enginestart(3);
+ */           
      } else if (at.indexOf("+DTMF: ")  > -1)        {String key = at.substring(at.indexOf("+DTMF: ")+7, at.indexOf("+DTMF: ")+8);
                                                      pin = pin + key;
                                                      if (pin.indexOf("*") > -1 ) pin= "", SIM800.println ("AT+VTS=\"9,7,9\""); 
-                                                 Serial.print (" Starting pin:"), Serial.println(pin);        
+                                               //    Serial.print (" Starting pin:"), Serial.println(pin);        
 
                  
       } else if (at.indexOf("+CMTI: \"SM\",") > -1) {int i = at.substring(at.indexOf("\"SM\",")+5, at.indexOf("\"SM\",")+6).toInt();
-                                                 //  delay(2000), SIM800.println("AT+CMGR="+i+""); // читаем СМС   
-                                                     delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
-//    верменный баг с чтением смс                   // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
+                                                    delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
+//                     // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
       
-      } else if (at.indexOf("123start10") > -1 )      {Timer = 60, enginestart();
-      } else if (at.indexOf("123start20") > -1 )      {Timer = 120, enginestart();
-      } else if (at.indexOf("123stop") > -1 )         {heatingstop();     
+      } else if (at.indexOf("123start10") > -1 )      {Timer = 60,  enginestart(5);
+      } else if (at.indexOf("123start20") > -1 )      {Timer = 120, enginestart(5);
+      } else if (at.indexOf("123webasto20") > -1 )    {Timer = 120, webasto();
+      } else if (at.indexOf("123stop") > -1 )         {Timer=0, heatingstop();     
    //   } else if (at.indexOf("narodmon=off") > -1 )    {n_send = false;  
    //   } else if (at.indexOf("narodmon=on") > -1 )     {n_send = true;  
    //   } else if (at.indexOf("sms=off") > -1 )         {sms_report = false;  
@@ -131,12 +131,13 @@ at = "";  // очищаем переменную
 
      if (Serial.available()) {             //если в мониторе порта ввели что-то
     while (Serial.available()) k = Serial.read(), at += char(k), delay(1);
-    SIM800.println(at),at = "";  //очищаем
-                         }
+    SIM800.println(at), at = "";  //очищаем
+                             }
 
-if (pin.indexOf("123") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,2,3\""), Serial.println (" Starting 10 min "), enginestart(),Timer = 60 ;  
-if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), Serial.println (" Starting 20 min "), enginestart(),Timer = 120;  
-if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Serial.println (" Stop "), heatingstop();  
+if (pin.indexOf("123") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,2,3\""), Timer = 60,  enginestart(5);  
+if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), Timer = 120, enginestart(5);  
+if (pin.indexOf("147") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,4,7\""), Timer = 120, webasto();
+if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Timer=0, heatingstop();  
 if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"), SMS_send = true;        
 if (millis()> Time1 + 10000) detection(), Time1 = millis();       // выполняем функцию detection () каждые 10 сек 
 if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   //если нажали на педаль тормоза в режиме прогрева
@@ -165,45 +166,45 @@ void detection(){                           // условия проверяем
         SIM800.print("\n Temp.Dvig: "),  SIM800.print(TempDS0);
         SIM800.print("\n Temp.Salon: "), SIM800.print(TempDS1);
         SIM800.print("\n Temp.Ulica: "), SIM800.print(TempDS2); 
-        SIM800.print("\n Uptime: "), SIM800.print(millis()/3600000), SIM800.print(" H.");
-        SIM800.print("\n Vbat: "), SIM800.print(Vbat),SIM800.print("V.");
-        if (n_send == true) SIM800.print("\n narodmon.ru ON ");
+        SIM800.print("\n Uptime: "),     SIM800.print(millis()/3600000), SIM800.print("H.");
+        SIM800.print("\n Vbat: "),       SIM800.print(Vbat),             SIM800.print("V.");
+        if (heating == true) SIM800.print("\n Progrev, Timer "), SIM800.print(Timer/6); 
+        if (n_send ==  true) SIM800.print("\n narodmon.ru ON ");
         if (digitalRead(Feedback_Pin) == HIGH) SIM800.print("\n Zahiganie ON ");
         SIM800.print("\n Popytok:"), SIM800.print(count);
         SIM800.print((char)26), SMS_send = false;
               }
    
     if (heating == true && Timer == 30 ) SMS_send = true; 
-    if (Timer > 0 ) Timer--;    // если таймер больше ноля  SMS_send = true;
-    if (heating == true && Timer <1) Serial.println("End timer"), heatingstop(); 
-    if (heating == true && Vbat < 11.0) Serial.println("Low voltage"), heatingstop(); 
+    if (Timer > 0 ) Timer--;                            // если таймер больше ноля  SMS_send = true;
+    if (heating == true && Timer <1)    heatingstop(); 
+    if (heating == true && Vbat < 11.0) heatingstop(); 
   
      //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
-    if (Timer2 == 2 && TempDS0 < -18 && TempDS0 != -127) Timer2 = 1080, Timer = 120, enginestart();  
+    if (Timer2 == 2 && TempDS0 < -18 && TempDS0 != -127) Timer2 = 1080, Timer = 120, enginestart(3);  
     if (Timer2 == 1 && TempDS0 < -25 && TempDS0 != -127) Timer2 = 1080, SMS_send = true;    
         Timer2--;                                                 // вычитаем еденицу
     if (Timer2 < 0) Timer2 = 1080;                                // продлеваем таймер на 3 часа (60x60x3/10 = 1080)
- 
-   // if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
+    if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
     interval--;
     if (interval <1 && n_send == true) interval = 30, SIM800.println ("AT+CGATT=1"), delay (200);    // подключаемся к GPRS 
     if (interval == 28 && n_send == true ) SIM800.println ("AT+CIPSHUT");    
              
 }             
 
-void enginestart() {                                      // программа запуска двигателя
+void enginestart(int n_count ) {                                      // программа запуска двигателя
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ -----------------------------------------------------------------*/
-count = 0;                                                // переменная хранящая число попыток запуска
-int StarterTime = 1400;                                   // переменная хранения времени работы стартера (1,4 сек. для первой попытки)  
-if (TempDS0 < 15 && TempDS0 != -127)  StarterTime = 1200, count = 2;   // при 15 градусах крутим 1.2 сек 2 попытки 
-if (TempDS0 < 5  && TempDS0 != -127)  StarterTime = 1800, count = 2;   // при 5  градусах крутим 1.8 сек 2 попытки 
-if (TempDS0 < -5 && TempDS0 != -127)  StarterTime = 2200, count = 3;   // при -5 градусах крутим 2.2 сек 3 попытки 
-if (TempDS0 <-10 && TempDS0 != -127)  StarterTime = 3300, count = 4;   //при -10 градусах крутим 3.3 сек 4 попытки 
-if (TempDS0 <-15 && TempDS0 != -127)  StarterTime = 6000, count = 5;   //при -15 градусах крутим 6.0 сек 5 попыток 
+count = 0;                                                  // переменная хранящая число попыток запуска
+int StarterTime = 1400;                                     // переменная хранения времени работы стартера (1,4 сек. для первой попытки)  
+if (TempDS0 < 15 && TempDS0 != -127)  StarterTime = 1200;   // при 15 градусах крутим  1.2 сек
+if (TempDS0 < 5  && TempDS0 != -127)  StarterTime = 1800;   // при 5  градусах крутим  1.8 сек 
+if (TempDS0 < -5 && TempDS0 != -127)  StarterTime = 2200;   // при -5 градусах крутим  2.2 сек 
+if (TempDS0 <-10 && TempDS0 != -127)  StarterTime = 3300;   // при -10 градусах крутим 3.3 сек 
+if (TempDS0 <-15 && TempDS0 != -127)  StarterTime = 6000;   // при -15 градусах крутим 6.0 сек 
 if (TempDS0 <-30 && TempDS0 != -127)  StarterTime = 1,count = 10, SMS_send = true;   //при -20 отправляем СМС 
 
 // если напряжение АКБ больше 10 вольт, зажигание выключено, счетчик числа попыток  меньше 5
- while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && count < 5){ 
+ while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && count < n_count){ 
    
 Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Serial.print(StarterTime);
 
@@ -246,16 +247,23 @@ Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Ser
         heatingstop();
              }
       }
-  Serial.println (" out >>>>> enginestart()");
+  Serial.println ("out >");
  // if (digitalRead(Feedback_Pin) == LOW) SMS_send = true;   // отправляем смс СРАЗУ только в случае незапуска
   
  }
 
+void webasto() {
+    if (heating == true) heatingstop();
+    delay (10000);
+    digitalWrite(WEBASTO_pin, LOW), heating= true;
+    Serial.println ("Webasto ON");               
+               }
 
-void heatingstop() {  // программа остановки прогрева двигателя
-    digitalWrite(ON_Pin, LOW),      delay (200);
-    digitalWrite(ACTIV_Pin, LOW),   delay (200);
-    digitalWrite(FIRST_P_Pin, LOW), delay (200);
-    Serial.println ("Ignition OFF"),
-    heating= false,                 delay(3000); 
+void heatingstop() {                                         // программа остановки прогрева двигателя
+    digitalWrite(ON_Pin, LOW),                       delay (200);
+    digitalWrite(ACTIV_Pin, LOW),                    delay (200);
+    digitalWrite(FIRST_P_Pin, LOW),                  delay (200);
+    digitalWrite(WEBASTO_pin, LOW),                  delay (200);
+    Serial.println ("heatingstop");
+    heating= false, delay(3000); 
                    }
