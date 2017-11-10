@@ -53,6 +53,7 @@ void setup() {
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
   Serial.println("Starting. | V3.2 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 09/11/2017"); 
+  delay (2000);
   SIM800_reset();
              }
 
@@ -94,16 +95,18 @@ void loop() {
 
                  
       } else if (at.indexOf("+CMTI: \"SM\",") > -1) {int i = at.substring(at.indexOf("\"SM\",")+5, at.indexOf("\"SM\",")+6).toInt();
-                                                   delay(2000), SIM800.println("AT+CMGR="), SIM800.println(i); // читаем СМС   
-    /*верменный баг с чтением смс                   // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
+                                                 //  delay(2000), SIM800.println("AT+CMGR="+i+""); // читаем СМС   
+                                                     delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
+//    верменный баг с чтением смс                   // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
       
       } else if (at.indexOf("123start10") > -1 )      {Timer = 60, enginestart();
       } else if (at.indexOf("123start20") > -1 )      {Timer = 120, enginestart();
       } else if (at.indexOf("123stop") > -1 )         {heatingstop();     
-  //  } else if (at.indexOf("narodmon=off") > -1 )  {n_send = false;  
-  //  } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
-  //  } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
-  //  } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;        
+   //   } else if (at.indexOf("narodmon=off") > -1 )    {n_send = false;  
+   //   } else if (at.indexOf("narodmon=on") > -1 )     {n_send = true;  
+   //   } else if (at.indexOf("sms=off") > -1 )         {sms_report = false;  
+   //   } else if (at.indexOf("sms=on") > -1 )          {sms_report = true;     
+    } else if (at.indexOf("SMS Ready") > -1 )         {SIM800_reset();       
 
     /*  -------------------------------------- ВХОДИМ В ИНТЕРНЕТ И ОТПРАВЛЯЕМ ПАКЕТ ДАННЫХ НА СЕРВЕР--------------------------------------------------   */
     } else if (at.indexOf("AT+CGATT=1\r\r\nOK\r\n") > -1 )         {SIM800.println("AT+CSTT=\""+APN+"\""),     delay (500);   // установливаем точку доступа  
@@ -134,7 +137,7 @@ at = "";  // очищаем переменную
 if (pin.indexOf("123") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,2,3\""), Serial.println (" Starting 10 min "), enginestart(),Timer = 60 ;  
 if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), Serial.println (" Starting 20 min "), enginestart(),Timer = 120;  
 if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Serial.println (" Stop "), heatingstop();  
-if (pin.indexOf("#") > -1   ) pin= "", SIM800.println("ATH0"), SMS_send = true;        
+if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"), SMS_send = true;        
 if (millis()> Time1 + 10000) detection(), Time1 = millis();       // выполняем функцию detection () каждые 10 сек 
 if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   //если нажали на педаль тормоза в режиме прогрева
 
@@ -162,15 +165,14 @@ void detection(){                           // условия проверяем
         SIM800.print("\n Temp.Dvig: "),  SIM800.print(TempDS0);
         SIM800.print("\n Temp.Salon: "), SIM800.print(TempDS1);
         SIM800.print("\n Temp.Ulica: "), SIM800.print(TempDS2); 
-        if (n_send == true) SIM800.print("\n narodmon.ru ON ");
         SIM800.print("\n Uptime: "), SIM800.print(millis()/3600000), SIM800.print(" H.");
-        if (digitalRead(Feedback_Pin) == HIGH) SIM800.print("\n Zahiganie ON ");
         SIM800.print("\n Vbat: "), SIM800.print(Vbat),SIM800.print("V.");
+        if (n_send == true) SIM800.print("\n narodmon.ru ON ");
+        if (digitalRead(Feedback_Pin) == HIGH) SIM800.print("\n Zahiganie ON ");
         SIM800.print("\n Popytok:"), SIM800.print(count);
         SIM800.print((char)26), SMS_send = false;
               }
-    //&& heating == true         
-    
+   
     if (heating == true && Timer == 30 ) SMS_send = true; 
     if (Timer > 0 ) Timer--;    // если таймер больше ноля  SMS_send = true;
     if (heating == true && Timer <1) Serial.println("End timer"), heatingstop(); 
@@ -257,5 +259,3 @@ void heatingstop() {  // программа остановки прогрева 
     Serial.println ("Ignition OFF"),
     heating= false,                 delay(3000); 
                    }
-
-
