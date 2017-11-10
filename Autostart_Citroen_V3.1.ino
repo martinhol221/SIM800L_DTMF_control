@@ -98,10 +98,9 @@ void loop() {
                                                     delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
 //                     // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
       
-      } else if (at.indexOf("123start10") > -1 )      {Timer = 60,  enginestart(5);
-      } else if (at.indexOf("123start20") > -1 )      {Timer = 120, enginestart(5);
-      } else if (at.indexOf("123webasto20") > -1 )    {Timer = 120, webasto();
-      } else if (at.indexOf("123stop") > -1 )         {Timer=0, heatingstop();     
+      } else if (at.indexOf("123start") > -1   )    {Timer = at.substring(at.indexOf("123start")+8, at.indexOf("123start")+10).toInt() *6; enginestart(5);
+      } else if (at.indexOf("123webasto") > -1 )    {Timer = 120, webasto();
+      } else if (at.indexOf("123stop") > -1 )       {Timer=0, heatingstop();     
    //   } else if (at.indexOf("narodmon=off") > -1 )    {n_send = false;  
    //   } else if (at.indexOf("narodmon=on") > -1 )     {n_send = true;  
    //   } else if (at.indexOf("sms=off") > -1 )         {sms_report = false;  
@@ -196,6 +195,7 @@ void enginestart(int n_count ) {                                      // про�
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ -----------------------------------------------------------------*/
 count = 0;                                                  // переменная хранящая число попыток запуска
 int StarterTime = 1400;                                     // переменная хранения времени работы стартера (1,4 сек. для первой попытки)  
+if (Timer == 0) Timer = 30;                                 // временный костыль
 if (TempDS0 < 15 && TempDS0 != -127)  StarterTime = 1200;   // при 15 градусах крутим  1.2 сек
 if (TempDS0 < 5  && TempDS0 != -127)  StarterTime = 1800;   // при 5  градусах крутим  1.8 сек 
 if (TempDS0 < -5 && TempDS0 != -127)  StarterTime = 2200;   // при -5 градусах крутим  2.2 сек 
