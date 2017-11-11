@@ -136,8 +136,8 @@ at = "";  // очищаем переменную
 if (pin.indexOf("123") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,2,3\""), Timer = 60,  enginestart(5);  
 if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), Timer = 120, enginestart(5);  
 if (pin.indexOf("147") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,4,7\""), Timer = 120, webasto();
-if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Timer=0, heatingstop();  
-if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"), SMS_send = true;        
+if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Timer=0,     heatingstop();  
+if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"),              SMS_send = true;        
 if (millis()> Time1 + 10000) detection(), Time1 = millis();       // выполняем функцию detection () каждые 10 сек 
 if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   //если нажали на педаль тормоза в режиме прогрева
 
@@ -159,7 +159,7 @@ void detection(){                           // условия проверяем
        
  */
   
-    if (SMS_send == true && sms_report == true) {              // если фаг SMS_send равен 1 высылаем отчет по СМС
+    if (SMS_send == true && sms_report == true) { SMS_send = false;          // если фаг SMS_send равен 1 высылаем отчет по СМС
         SIM800.println("AT+CMGS=\""+SMS_phone+"\""), delay(100);
         SIM800.print("Privet "+SENS+".!");
         SIM800.print("\n Temp.Dvig: "),  SIM800.print(TempDS0);
@@ -170,9 +170,8 @@ void detection(){                           // условия проверяем
         if (heating == true) SIM800.print("\n Progrev, Timer "), SIM800.print(Timer/6); 
         if (n_send ==  true) SIM800.print("\n narodmon.ru ON ");
         if (digitalRead(Feedback_Pin) == HIGH) SIM800.print("\n Zahiganie ON ");
-        SIM800.print("\n Popytok:"), SIM800.print(count);
-        SIM800.print((char)26), SMS_send = false;
-              }
+        SIM800.print("\n Popytok:"), SIM800.print(count+1);
+        SIM800.print((char)26);                 }
    
     if (heating == true && Timer == 30 ) SMS_send = true; 
     if (Timer > 0 ) Timer--;                            // если таймер больше ноля  SMS_send = true;
@@ -194,19 +193,19 @@ void detection(){                           // условия проверяем
 void enginestart(int n_count ) {                                      // программа запуска двигателя
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ -----------------------------------------------------------------*/
 count = 0;                                                  // переменная хранящая число попыток запуска
-int StarterTime = 1400;                                     // переменная хранения времени работы стартера (1,4 сек. для первой попытки)  
+int StTime = 1400;                                     // переменная хранения времени работы стартера (1,4 сек. для первой попытки)  
 if (Timer == 0) Timer = 30;                                 // временный костыль
-if (TempDS0 < 15 && TempDS0 != -127)  StarterTime = 1200;   // при 15 градусах крутим  1.2 сек
-if (TempDS0 < 5  && TempDS0 != -127)  StarterTime = 1800;   // при 5  градусах крутим  1.8 сек 
-if (TempDS0 < -5 && TempDS0 != -127)  StarterTime = 2200;   // при -5 градусах крутим  2.2 сек 
-if (TempDS0 <-10 && TempDS0 != -127)  StarterTime = 3300;   // при -10 градусах крутим 3.3 сек 
-if (TempDS0 <-15 && TempDS0 != -127)  StarterTime = 6000;   // при -15 градусах крутим 6.0 сек 
-if (TempDS0 <-30 && TempDS0 != -127)  StarterTime = 1,count = 10, SMS_send = true;   //при -20 отправляем СМС 
+if (TempDS0 < 15 && TempDS0 != -127)  StTime = 1200;   // при 15 градусах крутим  1.2 сек
+if (TempDS0 < 5  && TempDS0 != -127)  StTime = 1800;   // при 5  градусах крутим  1.8 сек 
+if (TempDS0 < -5 && TempDS0 != -127)  StTime = 2200;   // при -5 градусах крутим  2.2 сек 
+if (TempDS0 <-10 && TempDS0 != -127)  StTime = 3300;   // при -10 градусах крутим 3.3 сек 
+if (TempDS0 <-15 && TempDS0 != -127)  StTime = 6000;   // при -15 градусах крутим 6.0 сек 
+if (TempDS0 <-30 && TempDS0 != -127)  StTime = 1,count = 10, SMS_send = true;   //при -20 отправляем СМС 
 
 // если напряжение АКБ больше 10 вольт, зажигание выключено, счетчик числа попыток  меньше 5
  while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && count < n_count){ 
    
-Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Serial.print(StarterTime);
+Serial.print("count="), Serial.print(count),Serial.print(" | StTime ="),Serial.print(StTime);
 
     digitalWrite(ON_Pin, LOW),       delay (2000);        // выключаем зажигание на 2 сек. на всякий случай   
     digitalWrite(FIRST_P_Pin, HIGH), delay (500);         // включаем реле первого положения замка зажигания 
@@ -218,9 +217,9 @@ Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Ser
 // если уже более чем 3 неудачных попытк запуска то прогреваем свечи накаливания 8 сек дполнительно  
  if (count > 4) digitalWrite(ON_Pin, LOW), delay (10000), digitalWrite(ON_Pin, HIGH), delay (8000);
 
-// если не нажата педаль тормоза то включаем реле стартера на время StarterTime
+// если не нажата педаль тормоза то включаем реле стартера на время StTime
     if (digitalRead(STOP_Pin) == LOW) digitalWrite(STARTER_Pin, HIGH); // включаем реле стартера
-    delay (StarterTime);                                  // выдерживаем время StarterTime
+    delay (StTime);                                  // выдерживаем время StTime
     digitalWrite(STARTER_Pin, LOW),   delay (6000);       // отключаем реле, выжидаем 6 сек.
 
 // замеряем напряжение АКБ 3 раза и высчитываем среднее арифмитическое 3х замеров    
@@ -242,7 +241,7 @@ Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Ser
                         
         else { // если статра нет вертимся в цикле пока 
         Serial.print (" - > Vbat < Vstart = "), Serial.println(Vbat); 
-        StarterTime = StarterTime + 200;                      // увеличиваем время следующего старта на 0.2 сек.
+        StTime = StTime + 200;                      // увеличиваем время следующего старта на 0.2 сек.
         count++;                                              // уменьшаем на еденицу число оставшихся потыток запуска
         heatingstop();
              }
@@ -253,17 +252,17 @@ Serial.print("count="), Serial.print(count),Serial.print(" | StarterTime ="),Ser
  }
 
 void webasto() {
-    if (heating == true) heatingstop();
-    delay (10000);
+    if (heating == true) heatingstop(), delay (10000);
     digitalWrite(WEBASTO_pin, LOW), heating= true;
     Serial.println ("Webasto ON");               
                }
 
 void heatingstop() {                                         // программа остановки прогрева двигателя
-    digitalWrite(ON_Pin, LOW),                       delay (200);
-    digitalWrite(ACTIV_Pin, LOW),                    delay (200);
+    digitalWrite(ON_Pin,      LOW),                  delay (200);
+    digitalWrite(ACTIV_Pin,   LOW),                  delay (200);
     digitalWrite(FIRST_P_Pin, LOW),                  delay (200);
     digitalWrite(WEBASTO_pin, LOW),                  delay (200);
-    Serial.println ("heatingstop");
+    Serial.println ("Heating Stop");
     heating= false, delay(3000); 
                    }
+
