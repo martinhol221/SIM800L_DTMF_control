@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 SoftwareSerial SIM800(7, 6); // RX, TX  // для новых плат
 #include <DallasTemperature.h>          // подключаем библиотеку чтения датчиков температуры
-#define ONE_WIRE_BUS 2                  // и настраиваем  пин 4 как шину подключения датчиков DS18B20
+#define ONE_WIRE_BUS 4                  // и настраиваем  пин 4 как шину подключения датчиков DS18B20
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
 
