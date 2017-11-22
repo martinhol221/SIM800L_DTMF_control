@@ -13,14 +13,12 @@
 ## Так выглядит плата управления версии 1.5
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sim800L%2BArduinoProMini_v1.6.JPG)
 
-## Так подключается устройство
-![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/autostart.jpg)
 
 # Прошивка, скетч
 
 [Скетч для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v)
 
-Конфигурация скетча :
+# Конфигурация скетча :
 
 * номер телефона хозяина для входящих вызовов `call_phone= "+375290000000";` 
 
@@ -42,7 +40,7 @@
 
 * `m = 66.91;` - делитель, для точной калебровки напряжения АКБ 
 
-Подключение:
+# Подключение:
 
 * выход на реле иммобилайзера и первого положения замка зажинания `FIRST_P_Pin 8`, на плате `OUT1`
 
