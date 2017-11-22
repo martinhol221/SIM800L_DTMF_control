@@ -8,7 +8,6 @@
 
 [Новые платки и новый скетч для автозапуска](https://www.drive2.ru/c/485387655492665696/)
 
-[Скетч для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v)
 
 ## Так выглядит устройство управление реле
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Arduino%2BSim800l.JPG)
@@ -16,7 +15,9 @@
 ## Так подключается устройство
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/autostart.jpg)
 
-# Так работает прошивка
+# Прошивка, скетч
+
+[Скетч для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v)
 
 Ардуино слушает `SoftwareSerial SIM800(7, 6)` получая и отправляя АТ команды от модема и в модем.
 
