@@ -5,16 +5,18 @@ SoftwareSerial SIM800(7, 6); // RX, TX  // для новых плат
 OneWire oneWire(ONE_WIRE_BUS); 
 DallasTemperature sensors(&oneWire);
 
-#define STARTER_Pin 8   // на реле стартера, через транзистор с 11-го пина ардуино
-#define ON_Pin 9        // на реле зажигания, через транзистор с 12-го пина ардуино
+#define FIRST_P_Pin 8   // на реле первого положения замка зажигания
+#define ON_Pin 9        // на реле зажигания, через транзистор с 9-го пина ардуино
+#define STARTER_Pin 12  // на реле стартера, через транзистор с 12-го пина ардуино
+#define WEBASTO_pin 11  // на реле вебасто или подогрева седушек
 #define ACTIV_Pin 13    // на светодиод и реле первого положения замка зажигания (для активации возбуждения генератора)
 #define BAT_Pin A0      // на батарею, через делитель напряжения 39кОм / 11 кОм
-#define Feedback_Pin A1 // на прикуриватель или на ДАДМ, для детектирования момента запуска
+#define Feedback_Pin A1 // на провод от замка зажигания
 #define STOP_Pin A2     // на концевик педали тормоза для отключения режима прогрева
 #define PSO_Pin A3      // на прочие датчики через делитель 39 kOhm / 11 kΩ
 #define RESET_Pin 5     // пин перезагрузки
-#define FIRST_P_Pin 11  // на реле первого положения замка зажигания
-#define WEBASTO_pin 10              // на реле вебасто
+
+
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
 String call_phone= "+375290000000"; // телефон входящего вызова  
 String SMS_phone = "+375290000000"; // телефон куда отправляем СМС  s
@@ -53,7 +55,7 @@ void setup() {
   pinMode(WEBASTO_pin, OUTPUT);    // указываем пин на выход для доп реле вебасто
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Starting. | V3.1 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 10/11/2017"); 
+  Serial.println("Starting. | V3.1 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 22/11/2017"); 
   delay (2000);
   SIM800_reset();
              }
