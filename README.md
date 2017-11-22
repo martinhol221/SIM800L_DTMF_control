@@ -10,7 +10,7 @@
 
 
 ## Так выглядит устройство управление реле
-![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Arduino%2BSim800l.JPG)
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sim800L%2BArduinoProMini_v1.6.JPG)
 
 ## Так подключается устройство
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/autostart.jpg)
