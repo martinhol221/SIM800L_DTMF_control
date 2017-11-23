@@ -41,6 +41,8 @@
 
 # Подключение:
 
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sin800LV1.5.jpg)
+
 * выход на реле иммобилайзера и первого положения замка зажинания `FIRST_P_Pin 8`, на плате `OUT1`
 
 * выход на зажинания `ON_Pin 9`, на плате `OUT2` 
