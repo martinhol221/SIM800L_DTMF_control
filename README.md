@@ -10,7 +10,7 @@
 
 
 ## Так выглядит плата управления версии 1.5
-![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sim800L%2BArduinoProMini_v1.6.JPG)
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sim800L-1.5+.JPG)
 
 
 # Прошивка, скетч
