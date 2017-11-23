@@ -139,6 +139,10 @@
 
 `##`           - Окончание пакета данных.            
 
+Расход трафика до 10 Мб в месяц.
+
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/GPRSTrafic.jpg)
+
 
 ## 5. Прием команд из приложения Народмон 2017
 
