@@ -17,6 +17,8 @@
 
 [Скетч для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v)
 
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/loading.JPG)
+
 # Конфигурация скетча :
 
 * номер телефона хозяина для входящих вызовов `call_phone= "+375290000000";` 
