@@ -29,6 +29,12 @@ https://www.google.by/maps/place/55.939445,25.686443
 AT+SAPBR=0,1                         // закрываем GPRS соединение    
 
 AT+SAPBR=4,1                         // чтение текущих настроек подключения
+
+
+at+ceng=1
+
+at+ceng?
+
 */
 
 
