@@ -54,7 +54,7 @@ void setup() {
   pinMode(WEBASTO_pin, OUTPUT);    // указываем пин на выход для доп реле вебасто
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Starting. | V5.0 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 25/11/2017"); 
+  Serial.println("Starting. | V4.0 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 25/11/2017"); 
   delay (2000);
   SIM800_reset();
              }
