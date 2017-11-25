@@ -15,7 +15,13 @@
 
 # Прошивка, скетч
 
-[Скетч для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v)
+[Скетч 3.0  для загрузки через Arduino IDE](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V3.1.ino) в Arduino Pro Mini (8Mhz/3.3v), описание по нему ниже
+
+[Скетч 4.0  для (тестовый) ](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/Autostart_Citroen_V4.0.TEST.ino) отличие от 3.0; 
+
+* время работы стартера линейно привязано к температуре с датчика `TempDS0`, при -25 ... +50 время работы стартера 6.0 ... 1.0 сек.
+
+* таймер обратного отсчета линейно привязан к температуре с датчика `TempDS0`, при -25 ... +50 время работы стартера 5 ... 30 мин.
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/loading.JPG)
 
