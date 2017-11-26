@@ -18,13 +18,6 @@ AT+SAPBR=2,1                          //
 
 AT+CIPGSMLOC=1,1
 
-+CIPGSMLOC: 0,25.686443,55.939445,2017/11/24,09:43:57
-
-
-https://www.google.by/maps/place/55.939445,25.686443
-
-
-
 
 AT+SAPBR=0,1                         // закрываем GPRS соединение    
 
@@ -38,7 +31,7 @@ at+ceng?
 */
 
 
-String at = "+CIPGSMLOC: 0,25.686443,55.939445,2017/11/24,09:43:57";
+String at = "+CIPGSMLOC: 0,25.576543,55.559465,2017/11/24,09:43:57";
 String GPS;
 String Date;
 int Sec;
