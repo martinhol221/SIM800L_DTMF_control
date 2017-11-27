@@ -205,7 +205,6 @@ Serial.print("\n https://www.google.by/maps/place/"), Serial.print(GPSE), Serial
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
     if (Timer2 == 2 && TempDS0 < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
-    if (Timer2 == 1 && TempDS0 < -27) Timer2 = 1080, SMS_send = true;    
         Timer2--;                                                 // вычитаем еденицу
     if (Timer2 < 0) Timer2 = 1080;                                // продлеваем таймер на 3 часа (60x60x3/10 = 1080)
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
