@@ -120,6 +120,7 @@ void loop() {
     } else if (at.indexOf("SMS Ready") > -1 )         {SIM800_reset();       
 
     /*  -------------------------------------- ВХОДИМ В ИНТЕРНЕТ И ОТПРАВЛЯЕМ ПАКЕТ ДАННЫХ НА СЕРВЕР--------------------------------- */
+  //SIM800.println ("AT+SAPBR=3,1, \"Contype\",\"GPRS\";+SAPBR=3,1, \"APN\",\""+APN+"\";+SAPBR=1,1;")  // AT+SAPBR=3,1, "Contype","GPRS";+SAPBR=3,1, "APN","internet.mts.by;+SAPBR=1,1;+SAPBR=2,1;
     } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),     delay (500);   // установливаем точку доступа  
     } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),                delay (1000);  // устанавливаем соеденение   
     } else if (at.indexOf("AT+SAPBR=1,1") > -1 )                               {SIM800.println("AT+SAPBR=2,1"),                delay (1000);  // возвращаем IP-адрес модуля    
@@ -243,6 +244,7 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
     if (digitalRead(STOP_Pin) == LOW) {
                                       digitalWrite(STARTER_Pin, HIGH); // включаем реле стартера
                                       } else {
+                                      heatingstop();  
                                       break; 
                                       } 
     
@@ -261,14 +263,14 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
 
  if (Vbat > Vstart) {                                // если детектировать по напряжению зарядки     
                     
-                    Serial.print (" -> Vbat > Vstart = "), Serial.println(Vbat); 
+                    Serial.print ("Vbat="), Serial.println(Vbat); 
                     heating = true, digitalWrite(ACTIV_Pin, HIGH);
                     SIM800.println("ATH0");          // вешаем трубку
                     break;                           // считаем старт успешным, выхдим из цикла запуска двигателя
               
                }else{ 
                 
-                    Serial.print (" - > Vbat < Vstart = "), Serial.println(Vbat); 
+                    Serial.print ("Vbat="), Serial.println(Vbat); 
                     StTime = StTime + 200;           // увеличиваем время следующего старта на 0.2 сек.
                     heatingstop();                   // уменьшаем на еденицу число оставшихся потыток запуска
                     }
