@@ -1,4 +1,10 @@
 /*
+
+ATE1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W
+ATE1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W+CMGDA="DEL ALL";+CLIP=1
+
+
+
 AT+SAPBR=3,1, "Contype","GPRS"        // Установка настроек подключения CONTYPE – тип подключения GPRS или CSD
 
 AT+SAPBR=3,1, "APN","internet.mts.by" // Установка настроек подключения APN – точка подключения
