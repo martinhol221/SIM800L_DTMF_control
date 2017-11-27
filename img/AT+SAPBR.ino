@@ -1,11 +1,27 @@
+AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W   // первоначальная настройка модема
 
+OK                                                                           
 
-ATE1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W
-ATE1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W+CMGDA="DEL ALL";+CLIP=1
+AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W;+CMGDA="DEL ALL";+CLIP=1 // тоже работает
+
+OK
+
 
 AT+SAPBR=3,1, "Contype","GPRS";+SAPBR=3,1, "APN","internet.mts.by";+SAPBR=3,1,"USER","mts";+SAPBR=3,1,"PWD","mts";+SAPBR=1,1
-AT+SAPBR=3,1, "Contype","GPRS";+SAPBR=3,1, "APN","internet.mts.by";+SAPBR=3,1,"USER","mts";+SAPBR=3,1,"PWD","mts";+SAPBR=1,1;+SAPBR=2,1
 
+OK
+
+AT+SAPBR=2,1
+
++SAPBR: 1,1,"100.125.2.81"
+
+OK
+AT+SAPBR=0,1
+
+OK
+  
+  
+  
 AT+SAPBR=3,1, "Contype","GPRS"        // Установка настроек подключения CONTYPE – тип подключения GPRS или CSD
 
 AT+SAPBR=3,1, "APN","internet.mts.by" // Установка настроек подключения APN – точка подключения
@@ -29,6 +45,16 @@ AT+CIPGSMLOC=1,1
 AT+SAPBR=0,1                         // закрываем GPRS соединение    
 
 AT+SAPBR=4,1                         // чтение текущих настроек подключения
+
++SAPBR:
+CONTYPE: GPRS
+APN: internet.mts.by
+PHONENUM: 
+USER: mts
+PWD: mts
+RATE: 2
+
+OK
 
 
 at+ceng=1
