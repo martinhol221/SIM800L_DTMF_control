@@ -176,7 +176,7 @@
 
 `Popytok: 1`          - Число включения стартера с последнего удачного или неудачного запуска
 
-![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/inSMS2.jpg)
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/inSMS3.jpg)
 
 Геолокация работает в версии 4.1 в режиме теста. 
 
