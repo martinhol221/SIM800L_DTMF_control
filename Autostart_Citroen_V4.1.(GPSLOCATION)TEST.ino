@@ -155,8 +155,8 @@ void detection(){                           // условия проверяем
     TempDS2 = sensors.getTempCByIndex(2);   // датчик на улицу 
     
     if (TempDS0 == -127) TempDS0 = 86;
-    if (TempDS1 == -127) TempDS1 = 24;
-    if (TempDS2 == -127) TempDS2 = 16;
+    if (TempDS1 == -127) TempDS1 = 87;
+    if (TempDS2 == -127) TempDS2 = 88;
     
     Vbat = analogRead(BAT_Pin);             // замеряем напряжение на батарее
     Vbat = Vbat / m ;                       // переводим попугаи в вольты
