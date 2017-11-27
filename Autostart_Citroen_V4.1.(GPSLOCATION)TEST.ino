@@ -67,7 +67,8 @@ void SIM800_reset() {                                         // Call Ready
 /*  --------------------------------------------------- ПРЕДНАСТРОЙКА МОДЕМА SIM800L ------------------------------------------------ */   
  
 // digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
-   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
+   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;+CLTS=1;&W");
+//   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
             } 
 
 void callback(){                                               // обратный звонок при появлении напряжения на входе IN1
