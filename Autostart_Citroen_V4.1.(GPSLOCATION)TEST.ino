@@ -18,9 +18,9 @@ DallasTemperature sensors(&oneWire);
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
 String GPSE = "";                   // переменная храняжая долготу
 String GPSN = "";                   // переменная храняжая долготу
-String call_phone= "+375290000000"; // телефон входящего вызова  
-String SMS_phone = "+375290000000"; // телефон куда отправляем СМС  s
-String MAC = "80-01-AA-00-00-00";   // МАС-Адрес устройства для индентификации на сервере narodmon.ru (придумать свое 80-01-XX-XX-XX-XX-XX)
+String call_phone= "+3752900000"; // телефон входящего вызова  
+String SMS_phone = "+3752900000"; // телефон куда отправляем СМС  s
+String MAC = "80-01-AA-00-11-00";   // МАС-Адрес устройства для индентификации на сервере narodmon.ru (придумать свое 80-01-XX-XX-XX-XX-XX)
 String SENS = "VasjaPupkin";        // Название устройства (придумать свое Citroen 566 или др. для отображения в программе и на карте)
 String APN = "internet.mts.by";     // тчка доступа выхода в интернет вашего сотового оператора
 String USER = "mts";                // имя выхода в интернет вашего сотового оператора
@@ -57,29 +57,18 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Starting. | V4.1 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 26/11/2017"); 
-  delay (2000);
+  Serial.println("Start | MAC:"+MAC+" | TEL:"+call_phone+" | 27/11/2017"); 
+  delay (1000);
   SIM800_reset();
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
              }
 
 void SIM800_reset() {                                         // Call Ready
 /*  --------------------------------------------------- ПРЕДНАСТРОЙКА МОДЕМА SIM800L ------------------------------------------------ */   
-SIM800.println("ATE1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W+CMGDA=\"DEL ALL\";+CLIP=1");
-  
-/*  
-  // digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
-// SIM800.println("AT+CFUN=1,1");                              //                              AUTO_SAVE 
-  SIM800.println("ATE1"),                    delay(50);        // отключаем режим ЭХА          AT&W_SAVE 
-  SIM800.println("AT+DDET=1"),               delay (50);       // включаем DTMF декдер         AT&W_SAVE 
-  SIM800.println("AT+CMGF=1"),               delay (50);       // Включаем Текстовый режим СМС AT&W_SAVE 
-  SIM800.println("AT+CSCS=\"gsm\""),         delay (50);       // Выбираем кодировку СМС       AT&W_SAVE 
-  SIM800.println("AT+CNMI=2,1,0,0,0") ,      delay (100);      // Разрешаем прием входящих СМС AT&W_SAVE 
-  SIM800.println("AT+VTD=1"),                delay (50);       // Задаем длительность DTMF     AT&W_SAVE 
-  SIM800.println("AT+CMEE=1"),               delay (50);       // Инфо о ошибках               AT&W_SAVE 
-  SIM800.println("AT+CMGDA=\"DEL ALL\""),    delay (30);       // Удаляем все СМС              NO_SAVE 
-  SIM800.println("AT+CLIP=1"),               delay (50);       // включаем определитель номера NO_SAVE 
-          */   } 
+ 
+// digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
+   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
+            } 
 
 void callback(){                                               // обратный звонок при появлении напряжения на входе IN1
     SIM800.println("ATD"+call_phone+";"),    delay(5000); 
@@ -108,38 +97,37 @@ void loop() {
                  
       } else if (at.indexOf("+CMTI: \"SM\",") > -1) {int i = at.substring(at.indexOf("\"SM\",")+5, at.indexOf("\"SM\",")+6).toInt();
                                                     delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
-//                     // delay(20), SIM800.println("AT+CMGDA=\"DEL ALL\""), delay(20); //  и удаляем их все
       
       } else if (at.indexOf("123start") > -1   )    {/*Timer = at.substring(at.indexOf("123start")+8, at.indexOf("123start")+10).toInt() *6;*/ enginestart(5);
       } else if (at.indexOf("123webasto") > -1 )    {Timer = 120, webasto();
       } else if (at.indexOf("123stop") > -1 )       {Timer=0, heatingstop();     
-   //   } else if (at.indexOf("narodmon=off") > -1 )    {n_send = false;  
-   //   } else if (at.indexOf("narodmon=on") > -1 )     {n_send = true;  
-   //   } else if (at.indexOf("sms=off") > -1 )         {sms_report = false;  
-   //   } else if (at.indexOf("sms=on") > -1 )          {sms_report = true;     
-    } else if (at.indexOf("SMS Ready") > -1 )         {SIM800_reset();       
+ //   } else if (at.indexOf("narodmon=off") > -1 )  {n_send = false;  
+ //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
+ //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
+ //   } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;     
+      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1"), delay(3000);;       
 
-    /*  -------------------------------------- ВХОДИМ В ИНТЕРНЕТ И ОТПРАВЛЯЕМ ПАКЕТ ДАННЫХ НА СЕРВЕР--------------------------------- */
-  //SIM800.println ("AT+SAPBR=3,1, \"Contype\",\"GPRS\";+SAPBR=3,1, \"APN\",\""+APN+"\";+SAPBR=1,1;")  // AT+SAPBR=3,1, "Contype","GPRS";+SAPBR=3,1, "APN","internet.mts.by;+SAPBR=1,1;+SAPBR=2,1;
+    /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
+
+
     } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),     delay (500);   // установливаем точку доступа  
     } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),                delay (1000);  // устанавливаем соеденение   
-    } else if (at.indexOf("AT+SAPBR=1,1") > -1 )                               {SIM800.println("AT+SAPBR=2,1"),                delay (1000);  // возвращаем IP-адрес модуля    
-    } else if (at.indexOf("+SAPBR: 1,1") > -1 )                                {SIM800.println("AT+CIPGSMLOC=1,1"), delay (3000);
-    } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   ) {
-                                                      GPSE = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
-                                                      GPSN = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
-                                                      delay (200),  SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (1000);
-    } else if (at.indexOf("CONNECT OK\r\n") > -1 )                 {SIM800.println("AT+CIPSEND"),              delay (1200) ;  // меняем статус модема
-    } else if (at.indexOf("AT+CIPSEND\r\r\n>") > -1 )              {                             // "набиваем" пакет данными 
-                         SIM800.print("#" +MAC+ "#" +SENS);                                      // заголовок пакета с MAC адресом и именем устройства      
-                         SIM800.print("\n#Temp1#"),                SIM800.print(TempDS0);        // Температура с датчика №1      
-                         SIM800.print("\n#Temp2#"),                SIM800.print(TempDS1);        // Температура с датчика №2      
-                         SIM800.print("\n#Temp3#"),                SIM800.print(TempDS2);        // Температура с датчика №3      
-                         SIM800.print("\n#Vbat#"),                 SIM800.print(Vbat);           // Напряжение аккумулятора
-                         SIM800.print("\n#Uptime#"),               SIM800.print(millis()/1000);  // Время непрерывной работы
-                         SIM800.println("\n##");                                                 // закрываем пакет
-                         SIM800.println((char)26), delay (100);                                  // отправляем пакет
-     } 
+    } else if (at.indexOf("AT+SAPBR=1,1\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=2,1"),        delay (1000);  // проверяем статус соединения    
+    } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);  // запрашиваем геолокацию локацию
+    /*  -------------------------------------- обрабатываем о локации модема по информации базовых станций ---------------------------------------- */
+    } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {GPSE = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
+                                                           GPSN = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
+    /*  ------------------------------------------------ конектимся к серверу народмона ----------------------------------------------------------- */                            
+                                                          delay (200), SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (1000);
+    } else if (at.indexOf("CONNECT OK\r\n") > -1 )        {SIM800.println("AT+CIPSEND"), delay (1200);      
+    } else if (at.indexOf("AT+CIPSEND\r\r\n>") > -1 )     {SIM800.print("#" +MAC+ "#" +SENS);                              // заголовок пакета       
+                                                           SIM800.print("\n#Temp1#"),        SIM800.print(TempDS0);        // Температура с датчика №1      
+                                                           SIM800.print("\n#Temp2#"),        SIM800.print(TempDS1);        // Температура с датчика №2      
+                                                           SIM800.print("\n#Temp3#"),        SIM800.print(TempDS2);        // Температура с датчика №3      
+                                                           SIM800.print("\n#Vbat#"),         SIM800.print(Vbat);           // Напряжение аккумулятора
+                                                           SIM800.print("\n#Uptime#"),       SIM800.print(millis()/1000);  // Время непрерывной работы
+                                                           SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
+                                                          } 
 at = "";  // очищаем переменную
 
 }
@@ -172,16 +160,16 @@ void detection(){                           // условия проверяем
     
     Vbat = analogRead(BAT_Pin);             // замеряем напряжение на батарее
     Vbat = Vbat / m ;                       // переводим попугаи в вольты
-   /* 
-    Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
-    Serial.print(" || Temp1 : "), Serial.print(TempDS0);
-    Serial.print(" || Temp2 : "), Serial.print(TempDS1);
-    Serial.print(" || Temp3: "),  Serial.print(TempDS2);  
-    Serial.print(" || Interval : "), Serial.print(interval);
-    Serial.print(" || Timer ="), Serial.println (Timer);
+   
+  //  Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
+  //  Serial.print(" || Temp1 : "), Serial.print(TempDS0);
+  //  Serial.print(" || Temp2 : "), Serial.print(TempDS1);
+  //  Serial.print(" || Temp3: "),  Serial.print(TempDS2);  
+      Serial.print(" || Interval : "), Serial.println(interval);
+  //  Serial.print(" || Timer ="), Serial.println (Timer);
        
-*/
-Serial.print("\n https://www.google.by/maps/place/"), Serial.print(GPSE), Serial.print(","), Serial.print(GPSN);
+
+
   
     if (SMS_send == true && sms_report == true) { SMS_send = false;          // если фаг SMS_send равен 1 высылаем отчет по СМС
         SIM800.println("AT+CMGS=\""+SMS_phone+"\""), delay(100);
