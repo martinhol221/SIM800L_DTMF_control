@@ -95,3 +95,14 @@ Serial.println (Sec);
 void loop() {
 
 }
+
+
+
+
+
++CTZV: +12,0
+
+*PSUTTZ: 2017,11,28,15,35,58,"+12",0
+
+DST: 0
+
