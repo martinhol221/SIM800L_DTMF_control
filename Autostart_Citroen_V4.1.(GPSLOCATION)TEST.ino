@@ -57,7 +57,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Start | MAC:"+MAC+" | TEL:"+call_phone+" | 27/11/2017"); 
+  Serial.println("Load| MAC:"+MAC+" | TEL:"+call_phone+" | 29/11/2017"); 
   delay (1000);
   SIM800_reset();
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -67,8 +67,8 @@ void SIM800_reset() {                                         // Call Ready
 /*  --------------------------------------------------- ПРЕДНАСТРОЙКА МОДЕМА SIM800L ------------------------------------------------ */   
  
 // digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
-   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;+CLTS=1;&W");
-//   SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
+// SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;+CLTS=1;&W");
+SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
             } 
 
 void callback(){                                               // обратный звонок при появлении напряжения на входе IN1
@@ -163,11 +163,11 @@ void detection(){                           // условия проверяем
     Vbat = Vbat / m ;                       // переводим попугаи в вольты
    
   //  Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
-  //  Serial.print(" || Temp1 : "), Serial.print(TempDS0);
-  //  Serial.print(" || Temp2 : "), Serial.print(TempDS1);
-  //  Serial.print(" || Temp3: "),  Serial.print(TempDS2);  
-      Serial.print(" || Interval : "), Serial.println(interval);
-  //  Serial.print(" || Timer ="), Serial.println (Timer);
+  //  Serial.print("||Temp1:"), Serial.print(TempDS0);
+  //  Serial.print("||Temp2:"), Serial.print(TempDS1);
+  //  Serial.print("||Temp3:"),  Serial.print(TempDS2);  
+      Serial.print("|interval: "), Serial.println(interval);
+  //  Serial.print("||Timer:"), Serial.println (Timer);
        
 
 
@@ -189,8 +189,9 @@ void detection(){                           // условия проверяем
    
     if (heating == true && Timer == 12 ) SMS_send = true; 
     if (Timer > 0 ) Timer--;                                 // если таймер больше ноля  SMS_send = true;
-    if (heating == true && Timer <1)    heatingstop(); 
-    if (heating == true && Vbat < 11.0) heatingstop(); 
+    if (heating == true && Timer <1)    heatingstop();      // остановка прогрева если закончился отсчет таймера
+    if (heating == true && Vbat < 11.0 ) heatingstop();     // остановка прогрева если напряжение просело ниже 11 вольт 
+    if (heating == true && TempDS0 < 90) heatingstop();     // остановка прогрева если температура достигла 90 град 
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
     if (Timer2 == 2 && TempDS0 < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
@@ -216,7 +217,6 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
 
  while (Vbat > 10.00 && digitalRead(Feedback_Pin) == LOW && TempDS0 > -25 && count < n_count){ 
     count++;    // увеличиваем на еденицу число оставшихся потыток запуска
-// Serial.print("count="), Serial.print(count),Serial.print(" | StTime ="),Serial.print(StTime);
 
  digitalWrite(SECOND_P,     LOW),   delay (2000);        // выключаем зажигание на 2 сек. на всякий случай   
  digitalWrite(FIRST_P_Pin, HIGH),   delay (1000);        // включаем реле первого положения замка зажигания 
@@ -251,7 +251,7 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
 
  if (Vbat > Vstart) {                                // если детектировать по напряжению зарядки     
                     
-                    Serial.print ("Vbat="), Serial.println(Vbat); 
+                    Serial.println ("successful"), Serial.println(Vbat); 
                     heating = true, digitalWrite(ACTIV_Pin, HIGH);
                     SIM800.println("ATH0");          // вешаем трубку
                     break;                           // считаем старт успешным, выхдим из цикла запуска двигателя
@@ -263,7 +263,7 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
                     heatingstop();                   // уменьшаем на еденицу число оставшихся потыток запуска
                     }
       }
-Serial.println ("out >");
+Serial.println ("Выход из запуска");
  if (count == 0 || count > 1) SMS_send = true;        // отправляем смс СРАЗУ только в случае незапуска c первой попытки
  if (heating == true) digitalWrite(REL_Pin, HIGH) /*, delay(100),digitalWrite(REL_Pin, LOW)*/; // включаем подогрев седений 
  attachInterrupt(1, callback, FALLING);                    // включаем прерывание на обратный звонок
@@ -271,7 +271,7 @@ Serial.println ("out >");
 
 void webasto() {
     if (heating == true) heatingstop(), delay (10000);
-    digitalWrite(WEBASTO_pin, LOW), heating= true, Serial.println ("Webasto ON");               
+    digitalWrite(WEBASTO_pin, LOW), heating= true, Serial.println ("Вебасто вкл.");               
                }
 
 void heatingstop() {                                   
@@ -280,5 +280,5 @@ void heatingstop() {
     digitalWrite(WEBASTO_pin, LOW),   delay (300);       // выключаем вебасто       
     digitalWrite(REL_Pin,     LOW),   delay (300);       // выключаем доп реле 
     digitalWrite(ACTIV_Pin,   LOW),   delay (300);       // гасим светодиод
-    Serial.println("Heating Stop"),   delay(3000),          heating= false; 
+    Serial.println("rel. off"),   delay(3000),          heating= false; 
                    }
