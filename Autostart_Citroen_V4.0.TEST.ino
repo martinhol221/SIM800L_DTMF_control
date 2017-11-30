@@ -55,7 +55,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Starting. | V4.0 | SIM800L+narodmon.ru. | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 25/11/2017"); 
+  Serial.println("загрузка V4.0 | MAC:"+MAC+" | NAME:"+SENS+" | APN:"+APN+" | TEL:"+call_phone+" | 25/11/2017"); 
   delay (2000);
   SIM800_reset();
   attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -87,7 +87,7 @@ void loop() {
     while (SIM800.available()) k = SIM800.read(), at += char(k),delay(1); // набиваем в переменную at
     Serial.println(at);                                                   // Возвращаем ответ можема в монитор порта
     
-    if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
+    if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1 /* && at.indexOf("+CMGR:") == -1 */) {
                                                      SIM800.println("ATA"), delay(1000);
                                                      SIM800.println("AT+VTS=\"3,5,7\"");
                                                      pin= "";
