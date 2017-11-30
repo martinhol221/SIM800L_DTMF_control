@@ -193,7 +193,7 @@ void detection(){                           // условия проверяем
     if (Timer > 0 ) Timer--;                                 // если таймер больше ноля  SMS_send = true;
     if (heating == true && Timer <1)    heatingstop();      // остановка прогрева если закончился отсчет таймера
     if (heating == true && Vbat < 11.0 ) heatingstop();     // остановка прогрева если напряжение просело ниже 11 вольт 
-    if (heating == true && TempDS0 < 90) heatingstop();     // остановка прогрева если температура достигла 90 град 
+    if (heating == true && TempDS0 > 90) heatingstop();     // остановка прогрева если температура достигла 90 град 
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
     if (Timer2 == 2 && TempDS0 < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
