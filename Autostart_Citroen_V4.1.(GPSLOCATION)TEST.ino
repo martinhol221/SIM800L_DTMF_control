@@ -253,9 +253,9 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
 
  if (Vbat > Vstart) {                                // если детектировать по напряжению зарядки     
                     
-                    Serial.println ("successful"), Serial.println(Vbat); 
+                    Serial.println ("Есть запуск!"), Serial.println(Vbat); 
                     heating = true, digitalWrite(ACTIV_Pin, HIGH);
-                    SIM800.println("ATH0");          // вешаем трубку
+
                     break;                           // считаем старт успешным, выхдим из цикла запуска двигателя
               
                }else{ 
@@ -268,6 +268,7 @@ int StTime = map(TempDS0, 20, -15, 1000, 5000);            // при -15 кру�
 Serial.println ("Выход из запуска");
  if (count == 0 || count > 1) SMS_send = true;        // отправляем смс СРАЗУ только в случае незапуска c первой попытки
  if (heating == true) digitalWrite(REL_Pin, HIGH) /*, delay(100),digitalWrite(REL_Pin, LOW)*/; // включаем подогрев седений 
+ SIM800.println("ATH0");          // вешаем трубку
  attachInterrupt(1, callback, FALLING);                    // включаем прерывание на обратный звонок
  }
 
