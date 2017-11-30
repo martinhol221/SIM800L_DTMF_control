@@ -164,12 +164,12 @@ void detection(){                           // условия проверяем
     Vbat = analogRead(BAT_Pin);             // замеряем напряжение на батарее
     Vbat = Vbat / m ;                       // переводим попугаи в вольты
    
-  //  Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
-  //  Serial.print("||Temp1:"), Serial.print(TempDS0);
-  //  Serial.print("||Temp2:"), Serial.print(TempDS1);
-  //  Serial.print("||Temp3:"),  Serial.print(TempDS2);  
-      Serial.print("|interval: "), Serial.println(interval);
-  //  Serial.print("||Timer:"), Serial.println (Timer);
+  Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
+  Serial.print("||Temp1:"), Serial.print(TempDS0);
+  Serial.print("||Temp2:"), Serial.print(TempDS1);
+  Serial.print("||Temp3:"),  Serial.print(TempDS2);  
+  Serial.print("|interval: "), Serial.println(interval);
+  Serial.print("||Timer:"), Serial.println (Timer);
        
 
 
