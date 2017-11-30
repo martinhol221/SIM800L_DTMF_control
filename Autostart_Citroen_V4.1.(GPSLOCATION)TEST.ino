@@ -84,7 +84,7 @@ void loop() {
     Serial.println(at);                                                   // Возвращаем ответ можема в монитор порта
     
     if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1 /* && at.indexOf("+CMGR:") == -1 */) {
-                                                     delay(1000), SIM800.println("ATA"), delay(300);
+                                                     delay(50), SIM800.println("ATA"), delay(300);
                                                      // SIM800.println("AT+VTS=\"3,5,7\"");
                                                      pin= "";
 /*            
