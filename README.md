@@ -198,9 +198,9 @@
 
 `##`           - Окончание пакета данных.            
 
-Расход трафика до 10 Мб в месяц c ПОБАЙТНЫМ округлением сессии, которая к слову длится 20 сек.
+Расход трафика до 20 Мб в месяц c ПОБАЙТНЫМ округлением сессии, которая к слову длится 20 сек.
 
-![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/GPRSTrafic.jpg)
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/GPRSTrafic.JPG)
 
 
 ## 6. Прием команд из приложения Народмон 2017
