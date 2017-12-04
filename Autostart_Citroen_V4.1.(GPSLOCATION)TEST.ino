@@ -57,7 +57,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Load| MAC:"+MAC+" | TEL:"+call_phone+" | 29/11/2017"); 
+  Serial.println("Load| MAC:"+MAC+" | TEL:"+call_phone+" | 04/11/2017"); 
   delay (1000);
   SIM800_reset();
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -68,7 +68,7 @@ void SIM800_reset() {                                         // Call Ready
  
 // digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
 // SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;+CLTS=1;&W");
-SIM800.println("AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
+SIM800.println("AT+IPR=9600;E1+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
   
   delay(2000), SIM800.println("AT+CLIP=1");
             } 
@@ -108,7 +108,7 @@ void loop() {
  //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
  //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
  //   } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;     
-      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1"), delay(3000);;       
+      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1;+DDET=1"), delay(500);;       
 
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
 
@@ -196,7 +196,7 @@ void detection(){                           // условия проверяем
     if (heating == true && TempDS0 > 90) heatingstop();     // остановка прогрева если температура достигла 90 град 
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
-    if (Timer2 == 2 && TempDS0 < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
+  //  if (Timer2 == 2 && TempDS0 < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
         Timer2--;                                                 // вычитаем еденицу
     if (Timer2 < 0) Timer2 = 1080;                                // продлеваем таймер на 3 часа (60x60x3/10 = 1080)
     if (heating == false) digitalWrite(ACTIV_Pin, HIGH), delay (50), digitalWrite(ACTIV_Pin, LOW);  // моргнем светодиодом
