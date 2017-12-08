@@ -16,12 +16,12 @@ DallasTemperature sensors(&oneWire);
 #define REL_Pin      10             // на дополнительное реле
 
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
-String GPSE = "";                   // переменная храняжая широту  
-String GPSN = "";                   // переменная храняжая долготу 
+String LAT = "51.521716";          // переменная храняжая широту 
+String LNG = "29.734802";          // переменная храняжая долготу 
 String call_phone= "+375290000000"; // телефон входящего вызова  
-String SMS_phone = "+375290000000"; // телефон куда отправляем СМС  s
-String MAC = "80-01-41-00-00-00";   // МАС-Адрес устройства для индентификации на сервере narodmon.ru (придумать свое 80-01-XX-XX-XX-XX-XX)
-String SENS = "VsjaPupkin"          // Название устройства (придумать свое Citroen 566 или др. для отображения в программе и на карте)
+String SMS_phone = "+375290000001"; // телефон куда отправляем СМС
+String MAC = "80-01-AA-00-00-00";   // МАС-Адрес устройства для индентификации на сервере narodmon.ru (придумать свое 80-01-XX-XX-XX-XX-XX)
+String SENS = "VsjaPupkin";        // Название устройства (придумать свое Citroen 566 или др. для отображения в программе и на карте)
 String APN = "internet.mts.by";     // тчка доступа выхода в интернет вашего сотового оператора
 String USER = "mts";                // имя выхода в интернет вашего сотового оператора
 String PASS = "mts";                // пароль доступа выхода в интернет вашего сотового оператора
@@ -86,9 +86,9 @@ void loop() {
     response ();                                                          // отправляем ответ для разбора
     at = "";              }                                               // очищаем переменную
 /*  --------------------------------------------------- ТРАНСЛИРУЕМ КОМАНДЫ из СЕРИАЛА В МОДЕМ ------------------------------------- */   
-     if (Serial.available())      {  //если в мониторе порта ввели что-то
+ /*    if (Serial.available())      {  //если в мониторе порта ввели что-то
     while (Serial.available()) k = Serial.read(), at += char(k), delay(1);
-    SIM800.println(at), at = "";  }  //очищаем
+    SIM800.println(at), at = "";  }  //очищаем */
 /*  --------------------------------------------------- НЕПРЕРЫВНАЯ ПРОВЕРКА СОБЫТИЙ ----------------------------------------------- */   
 if (pin.indexOf("123") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,2,3\""), enginestart(3);  
 if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), enginestart(5);  
@@ -112,14 +112,14 @@ void detection(){                           // условия проверяем
     
     Vbat = analogRead(BAT_Pin);             // замеряем напряжение на батарее
     Vbat = Vbat / m ;                       // переводим попугаи в вольты
-   
+/*   
   Serial.print("Vbat= "),Serial.print(Vbat), Serial.print (" V.");  
   Serial.print("||Temp1:"), Serial.print(TempDS0);
   Serial.print("||Temp2:"), Serial.print(TempDS1);
   Serial.print("||Temp3:"),  Serial.print(TempDS2);  
   Serial.print("|interval: "), Serial.println(interval);
   Serial.print("||Timer:"), Serial.println (Timer);
-       
+ */      
 
 
   
@@ -135,7 +135,7 @@ void detection(){                           // условия проверяем
         if (heating == true)             SIM800.print("\n Timer "),             SIM800.print(Timer/6),   SIM800.print("min.");
     //  if (n_send ==  true)             SIM800.print("\n narodmon.ru ON ");        
         SIM800.print("\n Popytok:"), SIM800.print(count);
-        SIM800.print("\n https://www.google.by/maps/place/"), SIM800.print(GPSE), SIM800.print(","), SIM800.print(GPSN);
+        SIM800.print("\n https://www.google.by/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
         SIM800.print((char)26);                 }
    
     if (heating == true && Timer == 12 ) SMS_send = true; 
@@ -189,8 +189,8 @@ void response (){
       } else if (at.indexOf("AT+SAPBR=1,1\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=2,1"),        delay (1000);    // проверяем статус соединения    
       } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);    // запрашиваем геолокацию локацию
     /*  -------------------------------------- обрабатываем о локации модема по информации базовых станций ---------------------------------------- */
-      } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {GPSE = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
-                                                             GPSN = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
+      } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {LAT = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
+                                                             LNG = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
     /*  ------------------------------------------------ конектимся к серверу народмона ----------------------------------------------------------- */                            
                                                           delay (200), SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (1000);
       } else if (at.indexOf("CONNECT OK\r\n") > -1 )      {SIM800.println("AT+CIPSEND"), delay (1200);      
@@ -200,9 +200,11 @@ void response (){
                                                            SIM800.print("\n#Temp3#"),        SIM800.print(TempDS2);        // Температура с датчика №3      
                                                            SIM800.print("\n#Vbat#"),         SIM800.print(Vbat);           // Напряжение аккумулятора
                                                            SIM800.print("\n#Uptime#"),       SIM800.print(millis()/1000);  // Время непрерывной работы
+                                                           SIM800.print("\n#LAT#"),          SIM800.print(LAT);           // Широта
+                                                           SIM800.print("\n#LNG#"),          SIM800.print(LNG);           // Долгота
                                                            SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
                                                           } 
-                  } 
+ } 
 
 void enginestart(int n_count ) {                                      // программа запуска двигателя
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ ---------------------------------------------------------*/
