@@ -131,7 +131,7 @@ void detection(){                           // условия проверяем
         if (heating == true)             SIM800.print("\n Timer "),             SIM800.print(Timer/6),   SIM800.print("min.");
     //  if (n_send ==  true)             SIM800.print("\n narodmon.ru ON ");        
         SIM800.print("\n Popytok:"), SIM800.print(count);
-        SIM800.print("\n https://www.google.by/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
+        SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
         SIM800.print((char)26);                 }
    
     if (heating == true && Timer == 12 ) SMS_send = true; 
