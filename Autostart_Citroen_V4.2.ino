@@ -96,7 +96,7 @@ if (pin.indexOf("456") > -1 ) pin= "", SIM800.println ("AT+VTS=\"4,5,6\""), engi
 if (pin.indexOf("147") > -1 ) pin= "", SIM800.println ("AT+VTS=\"1,4,7\""), Timer = 120, webasto();
 if (pin.indexOf("789") > -1 ) pin= "", SIM800.println ("AT+VTS=\"A,B,D\""), Timer=0, heatingstop();  
 if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"),              SMS_send = true;        
-if (millis()> Time1 + 10000) detection(), Time1 = millis();       // выполняем функцию detection () каждые 10 сек 
+if (millis()> Time1 + 10000) Time1 = millis(), detection();       // выполняем функцию detection () каждые 10 сек 
 if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   //если нажали на педаль тормоза в режиме прогрева
 
 }
@@ -138,7 +138,7 @@ void detection(){                           // условия проверяем
     if (Timer > 0 ) Timer--;                                 // если таймер больше ноля  SMS_send = true;
     if (heating == true && Timer <1)    heatingstop();      // остановка прогрева если закончился отсчет таймера
     if (heating == true && Vbat < 11.0 ) heatingstop();     // остановка прогрева если напряжение просело ниже 11 вольт 
-    if (heating == true && TempDS[0] > 90) heatingstop();     // остановка прогрева если температура достигла 90 град 
+    if (heating == true && TempDS[0] > 70) heatingstop();     // остановка прогрева если температура достигла 70 град 
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
 //  if (Timer2 == 2 && TempDS[0] < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
