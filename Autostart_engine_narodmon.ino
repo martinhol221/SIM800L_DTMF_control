@@ -58,7 +58,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
-  Serial.println("Load| MAC:"+MAC+" | TEL:"+call_phone+" | 10/12/2017"); 
+  Serial.println("Load v.4.2| MAC:"+MAC+" | TEL:"+call_phone+" | 10/12/2017"); 
   delay (1000);
   SIM800_reset();
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
