@@ -16,7 +16,7 @@
 
 * алгаритм обработки ответа модема отныне завернут в отдельную функцию response ()
 
-Скетч с MQTT только в тесте , подробно https://github.com/martinhol221/SIM800L_MQTT
+Скетч с MQTT пока сырой, подробно https://github.com/martinhol221/SIM800L_MQTT
 
 # Конфигурация скетча :
 
