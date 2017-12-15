@@ -16,8 +16,8 @@ DallasTemperature sensors(&oneWire);
 #define REL_Pin      10             // на дополнительное реле
 
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
-String LAT = "";                    // переменная храняжая широту 
-String LNG = "";                    // переменная храняжая долготу 
+// String LAT = "";                    // переменная храняжая широту 
+// String LNG = "";                    // переменная храняжая долготу 
 String call_phone= "+375290000000"; // телефон входящего вызова  
 String SMS_phone = "+375290000000"; // телефон куда отправляем СМС 
 String MAC = "80-01-42-00-00-00";   // МАС-Адрес устройства для индентификации на сервере narodmon.ru (придумать свое 80-01-XX-XX-XX-XX-XX)
@@ -131,7 +131,7 @@ void detection(){                           // условия проверяем
         if (heating == true)             SIM800.print("\n Timer "),             SIM800.print(Timer/6),   SIM800.print("min.");
     //  if (n_send ==  true)             SIM800.print("\n narodmon.ru ON ");        
         SIM800.print("\n Popytok:"), SIM800.print(count);
-        SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
+    //  SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
         SIM800.print((char)26);                 }
    
     if (heating == true && Timer == 12 ) SMS_send = true; 
