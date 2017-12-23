@@ -178,7 +178,7 @@ void response (){
  //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
  //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
  //   } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;     
-      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1;+DDET=1"), delay(500);;       
+      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1;+DDET=1"), delay(500);     
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
       } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),delay (500); 
       } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),delay (1000); // устанавливаем соеденение   
