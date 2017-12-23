@@ -154,8 +154,8 @@ void detection(){                           // условия проверяем
 
 void response (){
   if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {
-                                                     delay(50), SIM800.println("ATA"), delay(300);
-                                                     // SIM800.println("AT+VTS=\"3,5,7\"");
+                                                     delay(50), SIM800.println("ATA"), delay(1000);
+                                                     SIM800.println("AT+VTS=\"3,5,7,7,8\"");
                                                      pin= "";
 /*            
     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
