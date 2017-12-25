@@ -13,7 +13,7 @@ Runing 1.02 sec. Voltage 12.31
 Runing 1.07 sec. Voltage 12.28
 Runing 1.13 sec. Voltage 12.36
 Runing 1.18 sec. Voltage 12.18           
-Runing 1.23 sec. Voltage 7.89      Момент включения стартер
+Runing 1.23 sec. Voltage 7.89      Момент включения стартера
 Runing 1.28 sec. Voltage 9.52
 Runing 1.33 sec. Voltage 9.82
 Runing 1.39 sec. Voltage 10.41
@@ -26,7 +26,7 @@ Runing 1.70 sec. Voltage 10.12
 Runing 1.75 sec. Voltage 10.38
 Runing 1.80 sec. Voltage 9.79
 Runing 1.85 sec. Voltage 10.38
-Runing 1.91 sec. Voltage 9.91     Момент отключения стартер 0.68 сек
+Runing 1.91 sec. Voltage 9.91     Момент отключения стартер самим ЭБУ двигателя спустя 0.68 сек
 Runing 1.96 sec. Voltage 10.06
 Runing 2.01 sec. Voltage 10.38
 Runing 2.06 sec. Voltage 10.62
@@ -120,7 +120,7 @@ Runing 6.59 sec. Voltage 10.68
 Runing 6.64 sec. Voltage 10.89
 Runing 6.69 sec. Voltage 10.71
 Runing 6.74 sec. Voltage 10.83
-Runing 6.80 sec. Voltage 10.67   Момент отключения реле автозапуска и включение обмотки возбуждения генератора
+Runing 6.80 sec. Voltage 10.67   Момент отключения реле автозапуска (6 сек) и включение обмотки возбуждения генератора
 Runing 6.85 sec. Voltage 11.14
 Runing 6.90 sec. Voltage 11.30
 Runing 6.95 sec. Voltage 11.17
@@ -171,7 +171,7 @@ Runing 9.24 sec. Voltage 13.11
 Runing 9.29 sec. Voltage 13.08
 Runing 9.35 sec. Voltage 13.19
 Runing 9.40 sec. Voltage 13.48
-Runing 9.45 sec. Voltage 13.50       // порок 13.5 вольт спустя 3 сек после выключения реле стартера 
+Runing 9.45 sec. Voltage 13.50       // порог 13.5 вольт спустя 3 сек после выключения реле стартера 
 Runing 9.50 sec. Voltage 13.90
 Runing 9.56 sec. Voltage 13.84
 Runing 9.61 sec. Voltage 14.02      
