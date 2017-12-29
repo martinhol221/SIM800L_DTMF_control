@@ -54,6 +54,7 @@ void setup() {
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
   Serial.begin(9600);              //скорость порта
   SIM800.begin(9600);              //скорость связи с модемом
+  Serial.setTimeout(500);          // тайм аут ожидания ответа
   Serial.println("Load v.4.3| MAC:"+MAC+" | TEL:"+call_phone+" | 27/12/2017"); 
 
   SIM800_reset();
