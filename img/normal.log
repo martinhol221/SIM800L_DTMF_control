@@ -1,113 +1,19 @@
-Start | MAC:80-01-AA-22-00-01 | TEL:+375290000000 | 27/11/2017               // загрузка ардуино
-AT+IPR=9600;E1+DDET=1;+CMGF=1;+CSCS="gsm";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W  
-
-OK                              // ответ модема, мол я настроился по всем пораметрам и сохранился, 1 раз за всю жизнь модема :-)
 
 
- || Interval : 5                // отсчет ардуино, -1 каждых 10 Сек.
+Напряжение: 7.41V
+|int: 2||Timer:0
+Temp0= 21.75
+Temp1= 21.44
+Temp2= 21.31
+Temp3= 21.81
 
+Напряжение: 7.42V
+|int: 1||Timer:0
+Temp0= 21.75
+Temp1= 21.50
+Temp2= 21.37
+Temp3= 21.81
 
- || Interval : 4
-
-RDY
-
-+CFUN: 1
-
-
-+CPIN: READY                    // модем аклимался после подачи подключился к симкарте
-
-
-Call Ready                      // модем аклимался после подачи питния и прочел телефонную книгу
-
-
-SMS Ready                       // модем аклимался после подачи питния и прочел телефонную книгу
-
-AT+CMGDA="DEL ALL";+CLIP=1      // модем получил команду стереть все смс
-
-OK
-
- || Interval : 3
- || Interval : 2
- || Interval : 1
-AT+SAPBR=3,1, "Contype","GPRS"  
-
-OK                            // ответил что настроил в себе тип соединения GPRS
-
-AT+SAPBR=3,1, "APN","internet.mts.by"
-
-OK                            // ответил что настроил в себе точку доступа
-
-AT+SAPBR=1,1
-
-OK                           // команду установить соединение принял
-AT+SAPBR=2,1
-
-+SAPBR: 1,1,"101.77.132.134"
-
-OK                           // вывел IP адрес
-
-AT+CIPGSMLOC=1,1             
-
-+CIPGSMLOC: 0,27.000004,53.000000,2017/11/27   // вернул информацию о геолокации
-AT+CIPSTART="TCP","narodmon.ru","8283"     
-
-OK                                            
-
-
-CONNECT OK                                     // подключился к народмону нормально
-
-AT+CIPSEND
-
->                                             // пготов к получению данных
-#80-01-AA-22-00-01#VasjaPupkin
-#Temp1#17.06
-#Temp2#17.56
-#Temp3      не влезло в буфер, только 64 байта, на сервер ушло полностью
- 
- 
- || Interval : 30
-
-SEND OK                                     // данные отправил на сервер
-
-OK
-
-
-CLOSED                                     // закрыл коннект с народмоном
-
- || Interval : 29
-AT+SAPBR=0,1       // на 29м отсчете эхо команды закрытия соединения
-
-
-OK
-
- || Interval : 28
- || Interval : 27
- || Interval : 26
- || Interval : 25
- || Interval : 24
- || Interval : 23
- || Interval : 22
- || Interval : 21
- || Interval : 20
- || Interval : 19
- || Interval : 18
- || Interval : 17
- || Interval : 16
- || Interval : 15
- || Interval : 14
- || Interval : 13
- || Interval : 12
- || Interval : 11
- || Interval : 10
- || Interval : 9
- || Interval : 8
- || Interval : 7
- || Interval : 6
- || Interval : 5
- || Interval : 4
- || Interval : 3
- || Interval : 2
- || Interval : 1
 AT+SAPBR=3,1, "Contype","GPRS"
 
 OK
@@ -122,170 +28,10 @@ OK
 
 AT+SAPBR=2,1
 
-+SAPBR: 1,1,"100.121.132.224"
++SAPBR: 1,1,"100.121.24.XXX"
 
 OK
 
-AT+CIPGSMLOC=1,1
-
-+CIPGSMLOC: 0,27.000002,53.000001,2017/11/27
-AT+CIPSTART="TCP","narodmon.ru","8283"
-
-OK
-
-CONNECT OK
-
-AT+CIPSEND
-
-> 
-#80-01-AA-22-00-01#VasjaPupkin
-#Temp1#16.94
-#Temp2#17.19
-#Temp3      не влезло в буфер, только 64 байта, на сервер ушло полностью
-
-
-SEND OK
-
-OK
-
- || Interval : 30
-
-CLOSED
-
- || Interval : 29
-AT+SAPBR=0,1      // на 29м отсчете эхо команды закрытия соединения
-
-
-OK
-
- || Interval : 28
- || Interval : 27
- || Interval : 26
- || Interval : 25
- || Interval : 24
- || Interval : 23
- || Interval : 22
- || Interval : 21
- || Interval : 20
- || Interval : 19
- || Interval : 18
- || Interval : 17
- || Interval : 16
- || Interval : 15
- || Interval : 14
- || Interval : 13
- || Interval : 12
- || Interval : 11
- || Interval : 10
- || Interval : 9
- || Interval : 8
- || Interval : 7
- || Interval : 6
- || Interval : 5
- || Interval : 4
- || Interval : 3
- || Interval : 2
- || Interval : 1
-AT+SAPBR=3,1, "Contype","GPRS"
-
-OK
-
-AT+SAPBR=3,1, "APN","internet.mts.by"
-
-OK
-
-AT+SAPBR=1,1
-
-OK
-
-AT+SAPBR=2,1
-
-+SAPBR: 1,1,"101.77.132.134"
-
-OK
-
-AT+CIPGSMLOC=1,1
-
-+CIPGSMLOC: 0,27.000002,53.000001,2017/11/27
-AT+CIPSTART="TCP","narodmon.ru","8283"
-
-OK
-
-CONNECT OK
-
-AT+CIPSEND
-
-> 
-#80-01-AA-22-00-01#VasjaPupkin
-#Temp1#16.37
-#Temp2#16.56
-#Temp3    // не влезло в буфер, только 64 байта, на сервер ушло полностью
-
-
-
-SEND OK
-
-OK
-
- || Interval : 30
-
-CLOSED
-
- || Interval : 29
-AT+SAPBR=0,1       // на 29м отсчете эхо команды закрытия соединения
-
-
-OK
-
- || Interval : 28
- || Interval : 27
- || Interval : 26
- || Interval : 25
- || Interval : 24
- || Interval : 23
- || Interval : 22
- || Interval : 21
- || Interval : 20
- || Interval : 19
- || Interval : 18
- || Interval : 17
- || Interval : 16
- || Interval : 15
- || Interval : 14
- || Interval : 13
- || Interval : 12
- || Interval : 11
- || Interval : 10
- || Interval : 9
- || Interval : 8
- || Interval : 7
- || Interval : 6
- || Interval : 5
- || Interval : 4
- || Interval : 3
- || Interval : 2
- || Interval : 1
-AT+SAPBR=3,1, "Contype","GPRS"
-
-OK
-
-AT+SAPBR=3,1, "APN","internet.mts.by"
-
-OK
-
-AT+SAPBR=1,1
-
-OK
-
-AT+SAPBR=2,1
-
-+SAPBR: 1,1,"100.121.132.224"
-
-OK
-
-AT+CIPGSMLOC=1,1
-
-+CIPGSMLOC: 0,27.000002,53.000001,2017/11/27
 AT+CIPSTART="TCP","narodmon.ru","8283"
 
 OK
@@ -296,10 +42,11 @@ CONNECT OK
 AT+CIPSEND
 
 > 
-#80-01-AA-22-00-01#VasjaPupkin
-#Temp1#16.06
-#Temp2#16.37
-#Temp3      // не влезло в буфер, только 64 байта, на сервер ушло полностью
+#80-01-AA-00-00-00#Citroen
+#Temp0#21.75
+#Temp1#21.50
+#Temp2#21.im#5
+#
 
 
 
@@ -307,25 +54,53 @@ SEND OK
 
 OK
 
- || Interval : 30
+Напряжение: 7.38V
+|int: 30||Timer:0
+Temp0= 21.75
+Temp1= 21.50
+Temp2= 21.37
+Temp3= 21.81
+
 
 CLOSED
 
- || Interval : 29
-AT+SAPBR=0,1       // на 29м отсчете эхо команды закрытия соединения
+Напряжение: 7.40V
+|int: 29||Timer:0
+Temp0= 21.81
+Temp1= 21.50
+Temp2= 21.37
+Temp3= 21.81
+
+AT+SAPBR=0,1
 
 
 OK
 
- || Interval : 28
- || Interval : 27
- || Interval : 26
- || Interval : 25
- || Interval : 24
- || Interval : 23
- || Interval : 22
- || Interval : 21
- || Interval : 20
- || Interval : 19
- || Interval : 18
+Напряжение: 7.38V
+|int: 28||Timer:0
+Temp0= 21.81
+Temp1= 21.50
+Temp2= 21.37
+Temp3= 21.87
+
+Напряжение: 7.40V
+|int: 27||Timer:0
+Temp0= 21.81
+Temp1= 21.56
+Temp2= 21.44
+Temp3= 21.87
+
+Напряжение: 7.41V
+|int: 26||Timer:0
+Temp0= 21.81
+Temp1= 21.56
+Temp2= 21.44
+Temp3= 21.87
+
+Напряжение: 7.38V
+|int: 25||Timer:0
+Temp0= 21.87
+Temp1= 21.56
+Temp2= 21.44
+Temp3= 21.87
 
