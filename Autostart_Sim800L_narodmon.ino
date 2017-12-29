@@ -36,7 +36,7 @@ float TempDS[11];                  // массив хранения темпер
 float Vbat, VbatStart, V_min ;     // переменная хранящая напряжение бортовой сети
 float m = 69.91;                   // делитель для перевода АЦП в вольты для резистров 39/11kOm
 unsigned long Time1, StarterTimeON = 0;
-int k, inDS, count = 0;
+int inDS, count = 0;
 int interval = 5;                  // интервал отправки данных на народмон сразу после загрузки 
 int Timer = 0;                     // таймер времени прогрева двигателя по умолчанию = 0
 int Timer2 = 1080;                 // часовой таймер (60 sec. x 60 min. / 10 = 360 )
@@ -68,13 +68,6 @@ void SIM800_reset() {                                         // Call Ready
 //SIM800.println("AT+IPR=9600;E1+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
 //+CME ERROR:
 
-/*AT+FSLS=C:\User\ 
-AT+FSFLSIZE=C:\User\Hello.amr // Получить размер файла
-+FSFLSIZE: 34598
-
-AT+CREC=4,"C:\User\Hello.amr",0,80 // Воспроизвести аудио файл в сторону удаленной стороны
-*/
-  
   delay(2000), SIM800.println("AT+CLIP=1");
             } 
 
@@ -85,14 +78,13 @@ void callback(){                                               // обратны
 
 void loop() {
 /*  --------------------------------------------------- НАЛИЗИРУЕМ БУФЕР ВИРТУАЛЬНОГО ПОРТА МОДЕМА---------------------------------- */ 
-  if (SIM800.available()) {                                               // если что-то пришло от SIM800 в SoftwareSerial Ардуино
-    while (SIM800.available()) k = SIM800.read(), at += char(k),delay(1); // набиваем в переменную at
-    Serial.println(at);                                                   // Возвращаем ответ можема в монитор порта
-    response ();                                                          // отправляем ответ для разбора
-    at = "";              }                                               // очищаем переменную
+  if (SIM800.available()) {                               // если что-то пришло от SIM800 в SoftwareSerial Ардуино
+    while (SIM800.available()) at = SIM800.readString();  // набиваем в переменную at
+    response ();                                          // отправляем ответ для разбора
+    Serial.println(at), at = "";              }           // Возвращаем ответ можема в монитор порта , очищаем переменную
 /*  --------------------------------------------------- ТРАНСЛИРУЕМ КОМАНДЫ из СЕРИАЛА В МОДЕМ ------------------------------------- */   
   if (Serial.available())      {  //если в мониторе порта ввели что-то
-    while (Serial.available()) k = Serial.read(), at += char(k), delay(1);
+    while (Serial.available()) at = SIM800.readString();
     SIM800.println(at), at = "";  }  //очищаем 
 /*  --------------------------------------------------- НЕПРЕРЫВНАЯ ПРОВЕРКА СОБЫТИЙ ----------------------------------------------- */   
 if (pin.indexOf("123") > -1 ) pin= "", Voice(2), enginestart(3);  
