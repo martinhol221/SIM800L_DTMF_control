@@ -43,6 +43,7 @@ bool heating = false;              // переменная состояния р
 bool SMS_send = false;             // флаг разовой отправки СМС
 
 
+
 void setup() {
   pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
   pinMode(SECOND_P,    OUTPUT);    // указываем пин на выход доп реле зажигания
@@ -181,11 +182,11 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
                                                            SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
                                                           } 
 Serial.println(at), at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
-
-if (pin.indexOf("123") > -1 ) pin= "", Voice(2), enginestart(3);  
-if (pin.indexOf("456") > -1 ) pin= "", Voice(2), enginestart(5);  
-if (pin.indexOf("789") > -1 ) pin= "", Voice(10),delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
-if (pin.indexOf("#")   > -1 ) pin= "", SIM800.println("ATH0"), SMS_send = true;    
+Serial.println("Пин "), Serial.println(pin);
+if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
+} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2), enginestart(5);  
+} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10),delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
+} else if (pin.indexOf("#")   > -1 ){ pin= "", SIM800.println("ATH0"), SMS_send = true;    }
  } 
 
 void enginestart(int Attempts ) {                                      // программа запуска двигателя
