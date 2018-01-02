@@ -4,7 +4,7 @@
 
 # Прошивка, скетч
 
-[Актуальный скетч 4.2 для загрузки через Arduino IDE 1.8.5](https://raw.githubusercontent.com/martinhol221/SIM800L_DTMF_control/master/Autostart_Sim800L_narodmon.ino) в Arduino Pro Mini (8Mhz/3.3v), 
+[Актуальный скетч 4.8 для загрузки через Arduino IDE 1.8.5](https://raw.githubusercontent.com/martinhol221/SIM800L_DTMF_control/master/Autostart_Sim800L_narodmon.ino) в Arduino Pro Mini (8Mhz/3.3v), 
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/loading.JPG)
 
@@ -14,7 +14,7 @@
 
 * Добавлена функция геолокации, данные о местоположении модема определяются по информации базовых станций, данные передаются на народмон и в СМС отчет 
 
-* алгаритм обработки ответа модема отныне завернут в отдельную функцию response ()
+* добавлен автоответчик
 
 Скетч с MQTT пока сырой, обкатанный перезалью до нового года, пока наработка тут https://github.com/martinhol221/SIM800L_MQTT
 
