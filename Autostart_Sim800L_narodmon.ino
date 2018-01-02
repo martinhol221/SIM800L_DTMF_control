@@ -234,10 +234,12 @@ while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(S
                                    break; 
                                    } 
  delay (100);
-// V_stON = VoltRead();                              // временно так
+//float V_stON = VoltRead();                              // временно так
  while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
+ digitalWrite(STARTER_Pin, LOW);
  Serial.println("Стартер выключил, ожидаем 6 сек.");
- digitalWrite(STARTER_Pin, LOW), delay (6000);       
+ Voice(8);
+ delay (6000);           
 
 // if (digitalRead(DDM_Pin) != LOW) {                // если детектировать по датчику давления масла 
 
