@@ -43,7 +43,6 @@ bool heating = false;              // переменная состояния р
 bool SMS_send = false;             // флаг разовой отправки СМС
 
 
-
 void setup() {
   pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
   pinMode(SECOND_P,    OUTPUT);    // указываем пин на выход доп реле зажигания
@@ -51,53 +50,53 @@ void setup() {
   pinMode(REL_Pin,     OUTPUT);    // указываем пин на выход для доп нужд.
   pinMode(FIRST_P_Pin, OUTPUT);    // указываем пин на выход для доп реле первого положения замка зажигания
   pinMode(WEBASTO_Pin, OUTPUT);    // указываем пин на выход для доп реле вебасто
-  pinMode(3, INPUT_PULLUP);        // указываем пин на вход для тревожного датчика с внутричипной подтяжкой к +3.3V
+  pinMode(RESET_Pin, OUTPUT);      // указываем пин на выход для перезагрузки модема
+  pinMode(3, INPUT_PULLUP);        // указываем пин на вход для с внутричипной подтяжкой к +3.3V
+  pinMode(2, INPUT_PULLUP);        // указываем пин на вход для с внутричипной подтяжкой к +3.3V
+  
   Serial.begin(9600);              //скорость порта
   Serial.setTimeout(50);
+  
   SIM800.begin(9600);              //скорость связи с модемом
   SIM800.setTimeout(500);          // тайм аут ожидания ответа
-  Serial.println("Load v.4.4| MAC:"+MAC+" | TEL:"+call_phone+" | 29/12/2017"); 
+  
+  Serial.println("Load v.4.4| MAC:"+MAC+" | TEL:"+call_phone+" | 02/01/2018"); 
 
-  SIM800_reset();
+  //SIM800_reset();
+ // attachInterrupt(0, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D2, или 0 -> 1 на ножке оптопары
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
              }
-
-void SIM800_reset() {                                         // Call Ready
-/*  --------------------------------------------------- ПРЕДНАСТРОЙКА МОДЕМА SIM800L ------------------------------------------------ */   
- 
-// digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
-//SIM800.println("AT+IPR=9600;E1+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W");
-delay(2000), SIM800.println("AT+CLIP=1");
-            } 
-
-void callback(){                                               // обратный звонок при появлении напряжения на входе IN1
+/*  --------------------------------------------------- Перезагрузка МОДЕМА SIM800L ------------------------------------------------ */ 
+void SIM800_reset() {                                             // Call Ready
+digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);}
+             
+void callback(){                                                  // обратный звонок при появлении напряжения на входе IN1
     SIM800.println("ATD"+call_phone+";"),    delay(5000);} 
-               
-
-
+             
 void loop() {
 
-if (SIM800.available())  resp_modem();   // если что-то пришло от SIM800 в SoftwareSerial Ардуино отправляем  для разбора
-if (Serial.available())  resp_serial();  // если что-то пришло от Ардуино отправляем в SIM800
+if (SIM800.available())  resp_modem();                            // если что-то пришло от SIM800 в Ардуино отправляем для разбора
+if (Serial.available())  resp_serial();                           // если что-то пришло от Ардуино отправляем в SIM800
 if (millis()> Time1 + 10000) Time1 = millis(), detection();       // выполняем функцию detection () каждые 10 сек 
-if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   //если нажали на педаль тормоза в режиме прогрева
+if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   // если нажали на педаль тормоза в режиме прогрева
             }
 
-void detection(){                     // условия проверяемые каждые 10 сек  
-   
-    Vbat = VoltRead();                // замеряем напряжение на батарее
+void detection(){                                                 // условия проверяемые каждые 10 сек  
+    
+    Vbat = VoltRead();                                            // замеряем напряжение на батарее
     Serial.print("|int: "), Serial.print(interval);
     Serial.print("||Timer:"), Serial.println (Timer);
     
     inDS = 0;
-    sensors.requestTemperatures();          // читаем температуру с трех датчиков
+    sensors.requestTemperatures();                                // читаем температуру с трех датчиков
     while (inDS < 10){
-          TempDS[inDS] = sensors.getTempCByIndex(inDS);            // читаем температуру
-      if (TempDS[inDS] == -127.00){ 
-                                  TempDS[inDS]= 80;
-                                  break; }                               // пока не доберемся до неподключенного датчика
+          TempDS[inDS] = sensors.getTempCByIndex(inDS);           // читаем температуру
+      if (TempDS[inDS] == -127.00){TempDS[inDS]= 80;
+                                   break; }                       // пока не доберемся до неподключенного датчика
               inDS++;} 
+              
     for (int i=0; i < inDS; i++) Serial.print("Temp"), Serial.print(i), Serial.print("= "), Serial.println(TempDS[i]); 
+    
     Serial.println ("");
 
   
@@ -134,31 +133,38 @@ void detection(){                     // условия проверяемые �
 void resp_serial (){     // ---------------- ТРАНСЛИРУЕМ КОМАНДЫ из ПОРТА В МОДЕМ ----------------------------------
      String at = "";   
      while (Serial.available()) at = Serial.readString();
+ //  int k = 0;
+ //  while (Serial.available()) k = Serial.read(),at += char(k),delay(1);
      SIM800.println(at), at = "";   }
 
 void resp_modem (){     //------------------ НАЛИЗИРУЕМ БУФЕР ВИРТУАЛЬНОГО ПОРТА МОДЕМА------------------------------
-     String at = "";             
+     String at = "";
      while (SIM800.available()) at = SIM800.readString();  // набиваем в переменную at
+ //  int k = 0;
+ //  while (SIM800.available()) k = SIM800.read(),at += char(k),delay(1);           
+     
  
 if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {
                                                      delay(50), SIM800.println("ATA"), delay(1000);
-                                                     Voice(1);
+                                                 if (heating == false){Voice(1); // обнуляем таймер если запуска не произошло
+                                                    }else Voice(8); 
                                                      pin= "";
 /*            
     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
                                                      delay(50), SIM800.println("ATH0");
-                                                     Timer = 60, enginestart(3);
+                                                     enginestart(3);
  */           
-     } else if (at.indexOf("+DTMF: ")  > -1)        {String key = at.substring(at.indexOf("+DTMF: ")+7, at.indexOf("+DTMF: ")+8);
+     } else if (at.indexOf("+DTMF: ")  > -1)        {String key = at.substring(at.indexOf("")+9, at.indexOf("")+10);
                                                      pin = pin + key;
-                                                     if (pin.indexOf("*") > -1 ) pin= "" /*, Voice(1)*/; 
+                                                     if (pin.indexOf("*") > -1 ) pin= ""; 
  
                  
       } else if (at.indexOf("+CMTI: \"SM\",") > -1) {int i = at.substring(at.indexOf("\"SM\",")+5, at.indexOf("\"SM\",")+6).toInt();
                                                     delay(2000), SIM800.print("AT+CMGR="), SIM800.println(i); // читаем СМС 
       
-      } else if (at.indexOf("#123start") > -1   )    {/*Timer = at.substring(at.indexOf("123start")+8, at.indexOf("123start")+10).toInt() *6;*/ enginestart(5);
-      } else if (at.indexOf("#123stop") > -1 )       {Timer=0, heatingstop();     
+      } else if (at.indexOf("#123start") > -1   )   {enginestart(5);
+      } else if (at.indexOf("#123stop") > -1 )      {Timer=0, heatingstop();       
+ //   } else if (at.indexOf("#456start") > -1   )   {Timer = at.substring(at.indexOf()+9, at.indexOf()+11).toInt() *6;     
  //   } else if (at.indexOf("narodmon=off") > -1 )  {n_send = false;  
  //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
  //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
@@ -183,16 +189,14 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
                                                           } 
 Serial.println(at), at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
 Serial.println("Пин "), Serial.println(pin);
-if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2), enginestart(5);  
-} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10),delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
+       if (pin.indexOf("123") > -1 ){ pin= "", Voice(11), enginestart(3);  
+} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
 } else if (pin.indexOf("#")   > -1 ){ pin= "", SIM800.println("ATH0"), SMS_send = true;    }
  } 
 
 void enginestart(int Attempts ) {                                      // программа запуска двигателя
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ ---------------------------------------------------------*/
 Serial.println("Предпусковая настройка");
-    Voice(2);
 //  detachInterrupt(1);                                    // отключаем аппаратное прерывание, что бы не мешало запуску
     VbatStart = VoltRead();
 
@@ -215,6 +219,7 @@ int z = map(TempDS[0], 0, -25, 0, 5);                     // задаем кол
     
  digitalWrite(SECOND_P,     LOW),   delay (2000);        // выключаем зажигание на 2 сек. на всякий случай   
  digitalWrite(FIRST_P_Pin, HIGH),   delay (1000);        // включаем реле первого положения замка зажигания 
+ Voice(6);
  digitalWrite(SECOND_P,    HIGH),   delay (4000);        // включаем зажигание, и выжидаем 4 сек.
 
 // прогреваем свечи несколько раз пропорционально понижению температуры, греем по 8 сек. с паузой 2 сек.
@@ -227,7 +232,7 @@ while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(S
                                    StarterTimeON = millis();
                                    digitalWrite(STARTER_Pin, HIGH);  // включаем реле стартера
                                    } else {
-                                   Voice(6); 
+                                   Voice(7); 
                                    heatingstop();
                                    Timer = 0;
                                    count = -1;  
@@ -238,30 +243,30 @@ while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(S
  while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
  digitalWrite(STARTER_Pin, LOW);
  Serial.println("Стартер выключил, ожидаем 6 сек.");
- Voice(8);
- delay (6000);           
+ Voice(12);
+ delay (6000);       
 
 // if (digitalRead(DDM_Pin) != LOW) {                // если детектировать по датчику давления масла 
 
  if (VoltRead() > Vstart) {                          // если детектировать по напряжению зарядки     
                           Serial.println ("Есть запуск!"); 
-                          Voice(4);
+                          Voice(5);
                           heating = true;
                           digitalWrite(LED_Pin, HIGH);
                           break; }                   // считаем старт успешным, выхдим из цикла запуска двигателя
                           
-                
+  Voice(6);              
   StTime = StTime + 200;                             // увеличиваем время следующего старта на 0.2 сек.
   heatingstop();   }                                 // уменьшаем на еденицу число оставшихся потыток запуска
                   
 Serial.println ("Выход из запуска");
  if (count != 1) SMS_send = true;                   // отправляем смс СРАЗУ только в случае незапуска c первой попытки
- if (heating == false){ Timer = 0;                  // обнуляем таймер если запуска не произошло
+ if (heating == false){ Timer = 0, Voice(10);                  // обнуляем таймер если запуска не произошло
            } else digitalWrite(WEBASTO_Pin, HIGH);  // включаем подогрев седений если все ОК
 
 
            
-delay(2000), SIM800.println("ATH0");                            // вешаем трубку (для SIM800L) 
+delay(3000), SIM800.println("ATH0");                            // вешаем трубку (для SIM800L) 
  // attachInterrupt(1, callback, FALLING);          // включаем прерывание на обратный звонок
  }
 
@@ -295,6 +300,9 @@ Track = 6 - "Упс, повторный запуск"
 Track = 7 - "Я на передаче"
 Track = 8 - "Уже прогреваюсь"
 Track = 9 - "Внимание, сработал датчик вибрации"
-Track = 10 - "Стоп"                */
+Track = 10 - "Стоп" 
+Track = 11 - "Воманду поняла, выполняю"
+Track = 12 - "Ждите" 
+*/
   
   
