@@ -1,4 +1,4 @@
-  ## Система удаленного запуска двигателя автомобиля на базе связки SIM800L + Arduino c управлением по DTMF и отчетами по SMS.
+  ## Система удаленного запуска двигателя автомобиля (SIM800L + Arduino), c управлением по DTMF, и отчетами по SMS.
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/V1.7.2.JPG)
 
