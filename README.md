@@ -50,6 +50,10 @@
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sin800LV1.5.jpg)
 
+Для подключения к авто по 6 проводам
+
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/conecting.JPG)
+
 * **выход на реле иммобилайзера и первого положения замка зажигания** `FIRST_P_Pin 8`, на плате `OUT1`
 
 * **выход на реле зажигания** `ON_Pin 9`, на плате `OUT2` 
