@@ -149,7 +149,7 @@ void resp_modem (){     //------------------ НАЛИЗИРУЕМ БУФЕР В�
    while (SIM800.available()) k = SIM800.read(),at += char(k),delay(1);           
    Serial.println(at);  
  
-if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {delay(50), SIM800.println("ATA"), ring = true;
+if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {delay(200), SIM800.println("ATA"), ring = true;
                                                     
 /*            
     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
