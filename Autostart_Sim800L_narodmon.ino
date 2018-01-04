@@ -45,6 +45,7 @@ bool SMS_send = false;             // флаг разовой отправки �
 bool ring = false;                 // флаг момента снятия трубки
 
 
+
 void setup() {
   pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
   pinMode(SECOND_P,    OUTPUT);    // указываем пин на выход доп реле зажигания
@@ -62,7 +63,7 @@ void setup() {
   SIM800.begin(9600);              //скорость связи с модемом
  // SIM800.setTimeout(500);          // тайм аут ожидания ответа
   
-  Serial.println("Load v.4.8| MAC:"+MAC+" | TEL:"+call_phone+" | 02/01/2018"); 
+  Serial.println("Загрузка v.4.8| MAC:"+MAC+" | TEL:"+call_phone+" | 04/01/2018"); 
   SIM800_reset();
  // attachInterrupt(0, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D2, или 0 -> 1 на ножке оптопары
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -114,7 +115,7 @@ void detection(){                                                 // услов�
         if (heating == true)             SIM800.print("\n Timer "),             SIM800.print(Timer/6),   SIM800.print("min.");
         SIM800.print("\n Attempts:"), SIM800.print(count);
         SIM800.print("\n Uptime: "),     SIM800.print(millis()/3600000),        SIM800.print("H.");
-    //    SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
+      //  SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
         SIM800.print((char)26);  }
    
     if (Timer == 12 ) SMS_send = true; 
@@ -179,7 +180,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
       } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {/*SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);    // запрашиваем геолокацию локацию
       } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {LAT = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
                                                              LNG = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
-                                            delay (200), */ SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (1000);
+                                            delay (200),*/  SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (1000);
       } else if (at.indexOf("CONNECT OK\r\n") > -1 )      {SIM800.println("AT+CIPSEND"), delay (1200);      
       } else if (at.indexOf("AT+CIPSEND\r\r\n>") > -1 )   {SIM800.print("#" +MAC+ "#" +SENS);                              // заголовок пакета       
                               for (int i=0; i < inDS; i++) SIM800.print("\n#Temp"), SIM800.print(i), SIM800.print("#"), SIM800.print(TempDS[i]);
@@ -194,10 +195,10 @@ at = "";            // Возвращаем ответ можема в мони�
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
 } else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
 } else if (pin.indexOf("#")   > -1 ){ pin= "", SIM800.println("ATH0"), SMS_send = true;    }
-if (ring == true){ ring = false, delay (2000), pin= ""; // ждем, обнуляем пин
-                   if (heating == false){Voice(1); // "Привет, жду команду"
-                                   }else Voice(8); // "Уже прогреваюсь"
-                 }                    
+if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем пин
+                    if (heating == false){Voice(1);
+                                    }else Voice(8); 
+                  }                    
  } 
 
 void enginestart(int Attempts ) {                                      // программа запуска двигателя
@@ -245,7 +246,7 @@ while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(S
                                    break; 
                                    } 
  delay (100);
-//float V_stON = VoltRead();                          // временно так
+//float V_stON = VoltRead();                              // временно так
  while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
  digitalWrite(STARTER_Pin, LOW);
  Serial.println("Стартер выключил, ожидаем 6 сек.");
@@ -272,8 +273,8 @@ Serial.println ("Выход из запуска");
 
 
            
-delay(3000), SIM800.println("ATH0");                // вешаем трубку (для SIM800L) 
-attachInterrupt(1, callback, FALLING);              // включаем прерывание на обратный звонок
+delay(3000), SIM800.println("ATH0");                            // вешаем трубку (для SIM800L) 
+attachInterrupt(1, callback, FALLING);          // включаем прерывание на обратный звонок
  }
 
 
@@ -296,5 +297,3 @@ void heatingstop() {                                // программа ост
 
 void Voice(int Track){
     SIM800.print("AT+CREC=4,\"C:\\User\\"), SIM800.print(Track), SIM800.println(".amr\",0,95");}
-
-  
