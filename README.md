@@ -342,4 +342,4 @@ SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);
 
 [Подделка на подделку ELM327, или как еще читать температуру ДВС]( https://www.drive2.ru/c/479335393737572613/) опыт работы с K-line шиной по протоколу ISO 14230-4 kwp связкой Arduino + L9637D
 
-martinhool@yamdex.by
+martinhool@yandex.by
