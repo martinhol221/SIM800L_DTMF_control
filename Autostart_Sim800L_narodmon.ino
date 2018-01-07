@@ -44,8 +44,6 @@ bool heating = false;              // переменная состояния р
 bool SMS_send = false;             // флаг разовой отправки СМС
 bool ring = false;                 // флаг момента снятия трубки
 
-
-
 void setup() {
   pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
   pinMode(SECOND_P,    OUTPUT);    // указываем пин на выход доп реле зажигания
@@ -70,7 +68,7 @@ void setup() {
              }
 /*  --------------------------------------------------- Перезагрузка МОДЕМА SIM800L ------------------------------------------------ */ 
 void SIM800_reset() {  
- delay(1000); SIM800.println("AT+CLIP=1;+DDET=1");
+ delay(2000); SIM800.println("AT+CMGDA=\"DEL ALL\"");  // Удаляем все СМС
 //SIM800.println("AT+IPR=9600;E1+CMGF=1;+CSCS=\"gsm\";+CNMI=2,1,0,0,0;+VTD=1;+CMEE=1;&W"); 
 //digitalWrite(RESET_Pin, LOW),delay(2000), digitalWrite(RESET_Pin, HIGH), delay(5000);
 }
@@ -172,7 +170,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
  //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
  //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
  //   } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;     
-      } else if (at.indexOf("SMS Ready") > -1 )     {SIM800.println("AT+CMGDA=\"DEL ALL\";+CLIP=1;+DDET=1"), delay(200); // настройк модема после его загрузки    
+      } else if (at.indexOf("SMS Ready") > -1 || at.indexOf("NO CARRIER") > -1 ) {SIM800.println("AT+CLIP=1;+DDET=1"); // Активируем АОН и декодер DTMF
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
       } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),delay (500); 
       } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),delay (1000); // устанавливаем соеденение   
