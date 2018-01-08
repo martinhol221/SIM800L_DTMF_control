@@ -231,8 +231,8 @@ int z = map(TempDS[0], 0, -25, 0, 5);                     // задаем кол
 while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(SECOND_P, HIGH), delay(8000);
  
 // если не нажата педаль тормоза или КПП в нейтрали то включаем реле стартера на время StTime
- if (digitalRead(STOP_Pin) == LOW) {         // нейтраль на минус
-// if (digitalRead(STOP_Pin) == HIGH) {         // нейтраль на плюс +12
+ if (digitalRead(STOP_Pin) == LOW) {         // в нейтрали на минус
+// if (digitalRead(STOP_Pin) == HIGH) {      // в нейтрали на плюс +12
                                    Serial.println("Стартер включил");
                                    Voice(4);
                                    StarterTimeON = millis();
