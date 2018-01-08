@@ -334,7 +334,7 @@ SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);
 
 # Ссылки на мои предыдущие проекты на эту тему:
 
-[Видео в работе](https://www.youtube.com/watch?v=WsydZUWQ4po&t=)
+[Видео в работе на Youtube](https://www.youtube.com/watch?v=WsydZUWQ4po&t=)
 
 
 [Анатомия автозапуска (DRIVE2.RU)](https://www.drive2.ru/l/471004119256006698/) смый первый опыт , еще литием на борту
