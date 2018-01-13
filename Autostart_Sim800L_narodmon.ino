@@ -228,7 +228,7 @@ int z = map(TempDS[0], 0, -25, 0, 5);                     // задаем кол
  digitalWrite(SECOND_P,    HIGH),   delay (4000);        // включаем зажигание, и выжидаем 4 сек.
  
 // прогреваем свечи несколько раз пропорционально понижению температуры, греем по 8 сек. с паузой 2 сек.
-while (z > 0) Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(SECOND_P, HIGH), delay(8000);
+while (z > 0) z--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(SECOND_P, HIGH), delay(8000);
  
 // если не нажата педаль тормоза или КПП в нейтрали то включаем реле стартера на время StTime
  if (digitalRead(STOP_Pin) == LOW) {         // в нейтрали на минус
