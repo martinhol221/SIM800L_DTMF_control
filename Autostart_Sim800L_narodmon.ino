@@ -81,7 +81,7 @@ void loop() {
 if (SIM800.available())  resp_modem();                            // если что-то пришло от SIM800 в Ардуино отправляем для разбора
 if (Serial.available())  resp_serial();                           // если что-то пришло от Ардуино отправляем в SIM800
 if (millis()> Time1 + 10000) Time1 = millis(), detection();       // выполняем функцию detection () каждые 10 сек 
-if (heating == true && digitalRead(STOP_Pin)==1) heatingstop();   // если нажали на педаль тормоза в режиме прогрева
+if (heating == true && digitalRead(STOP_Pin)==1) heatingstop(1);   // если нажали на педаль тормоза в режиме прогрева
             }
 
 void detection(){                                                 // условия проверяемые каждые 10 сек  
@@ -118,9 +118,9 @@ void detection(){                                                 // услов�
    
     if (Timer == 12 ) SMS_send = true; 
     if (Timer > 0 ) Timer--;                                // если таймер больше ноля  SMS_send = true;
-    if (heating == true && Timer <1)    heatingstop();      // остановка прогрева если закончился отсчет таймера
-    if (heating == true && Vbat < 11.0 ) heatingstop();     // остановка прогрева если напряжение просело ниже 11 вольт 
-    if (heating == true && TempDS[0] > 86) heatingstop();   // остановка прогрева если температура достигла 70 град 
+    if (heating == true && Timer <1)    heatingstop(0);      // остановка прогрева если закончился таймера
+    if (heating == true && Vbat < 11.0 ) heatingstop(1);     // остановка прогрева если напряжение просело ниже 11 вольт 
+    if (heating == true && TempDS[0] > 86) heatingstop(1);   // остановка прогрева если температура достигла 70 град 
   
     //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
 //  if (Timer2 == 2 && TempDS[0] < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
@@ -164,7 +164,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
 
      
       } else if (at.indexOf("#123start") > -1   )   {enginestart(5);
-      } else if (at.indexOf("#123stop") > -1 )      {Timer=0, heatingstop();       
+      } else if (at.indexOf("#123stop") > -1 )      {heatingstop(1);       
  //   } else if (at.indexOf("#456start") > -1   )   {Timer = at.substring(at.indexOf()+9, at.indexOf()+11).toInt() *6;     
  //   } else if (at.indexOf("narodmon=off") > -1 )  {n_send = false;  
  //   } else if (at.indexOf("narodmon=on") > -1 )   {n_send = true;  
@@ -191,7 +191,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
 at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
 //Serial.println("Пин "), Serial.println(pin);
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), SIM800.println("ATH0"),  Timer=0, heatingstop();  
+} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), SIM800.println("ATH0"),heatingstop(1);  
 } else if (pin.indexOf("#")   > -1 ){ pin= "", SIM800.println("ATH0"), SMS_send = true;    }
 if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем пин
                     if (heating == false){Voice(1);
@@ -240,7 +240,7 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
                                    digitalWrite(STARTER_Pin, HIGH);  // включаем реле стартера
                                    } else {
                                    Voice(7); 
-                                   heatingstop();
+                                   heatingstop(1);
                                    Timer = 0;
                                    count = -1;  
                                    break; 
@@ -266,7 +266,7 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
   Voice(6);              
   StTime = StTime + 200;                             // увеличиваем время следующего старта на 0.2 сек.
 //  z++;
-  heatingstop();   }                                 // уменьшаем на еденицу число оставшихся потыток запуска
+  heatingstop(0);   }                                // отключаем все реле без бнуления таймера
                   
 Serial.println ("Выход из запуска");
  if (count != 1) SMS_send = true;                   // отправляем смс СРАЗУ только в случае незапуска c первой попытки
@@ -289,13 +289,15 @@ float VoltRead()    {                               // замеряем напр
                     
 
 
-void heatingstop() {                                // программа остановки прогрева двигателя
+void heatingstop(bool reset_timer) {                                 // программа остановки прогрева двигателя
     digitalWrite(SECOND_P,    LOW), delay (100);
     digitalWrite(LED_Pin,     LOW), delay (100);
     digitalWrite(FIRST_P_Pin, LOW), delay (100);
     digitalWrite(WEBASTO_Pin, LOW), delay (100);
     heating= false,                 delay(2000); 
-    Serial.println ("Выключить все"); }
+    Serial.println ("Выключить все"); 
+    if (reset_timer == true) Timer = 0;
+    }
 
 void Voice(int Track){
     SIM800.print("AT+CREC=4,\"C:\\User\\"), SIM800.print(Track), SIM800.println(".amr\",0,95");}
