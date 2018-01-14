@@ -241,7 +241,6 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
                                    } else {
                                    Voice(7); 
                                    heatingstop(1);
-                                   Timer = 0;
                                    count = -1;  
                                    break; 
                                    } 
