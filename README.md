@@ -160,7 +160,7 @@
  
  * за 2 минуты до окончания прогрева, если до истечении времени не была нажата педаль СТОП, отправляется СМС
  
- ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/SMS.JPG)
+ ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/SMS.jpg)
  
 Текст СМС
 
@@ -188,7 +188,7 @@
 
 ## 5. Отправка показаний датчиков на сервер narodmon.ru
 
- ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/narod.JPG)
+ ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/narod.jpg)
 
 Каждые 5 минут открывает GPRS соединение с сервером `narodmon.ru:8283` и отправляет пакет вида:
  
