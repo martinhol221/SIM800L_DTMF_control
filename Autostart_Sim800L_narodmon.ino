@@ -191,8 +191,8 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
 at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
 //Serial.println("Пин "), Serial.println(pin);
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("741") > -1 ){ pin= "", Voice(2),  delay(1000), n_send = false,SIM800.println("ATH0");   
-} else if (pin.indexOf("852") > -1 ){ pin= "", Voice(2),  delay(1000), n_send = true, SIM800.println("ATH0");    
+} else if (pin.indexOf("741") > -1 ){ pin= "", Voice(12),  delay(1000), n_send = false,SIM800.println("ATH0");   
+} else if (pin.indexOf("852") > -1 ){ pin= "", Voice(12),  delay(1000), n_send = true, SIM800.println("ATH0");    
 } else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1000), Timer2 = 1080, SIM800.println("ATH0");         
 } else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), Timer2 = 0,    SIM800.println("ATH0"), heatingstop(1);     
 } else if (pin.indexOf("#")   > -1 ){ pin= "",                                        SIM800.println("ATH0"), SMS_send = true;}
