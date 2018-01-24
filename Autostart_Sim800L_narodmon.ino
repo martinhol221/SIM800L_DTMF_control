@@ -257,8 +257,8 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
  Voice(12);
  delay (6000);       
 
-// if (digitalRead(DDM_Pin) != LOW) {                // если детектировать по датчику давления масла 
-
+// if (digitalRead(PSO_Pin) != LOW)  {               // если детектировать по датчику давления масла 
+// if (digitalRead(PSO_Pin)  = LOW)) {               // если детектировать по лампе зарядки 
  if (VoltRead() > Vstart) {                          // если детектировать по напряжению зарядки     
                           Serial.println ("Есть запуск!"); 
                           Voice(5);
