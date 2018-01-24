@@ -82,7 +82,7 @@ void loop() {
 if (SIM800.available())  resp_modem();                            // если что-то пришло от SIM800 в Ардуино отправляем для разбора
 if (Serial.available())  resp_serial();                           // если что-то пришло от Ардуино отправляем в SIM800
 if (millis()> Time1 + 10000) Time1 = millis(), detection();       // выполняем функцию detection () каждые 10 сек 
-if (heating == true && digitalRead(STOP_Pin)==1) heatingstop(1);   // если нажали на педаль тормоза в режиме прогрева
+if (heating == true && digitalRead(STOP_Pin)==1) Timer2 = 0,  heatingstop(1);   // если нажали на педаль тормоза в режиме прогрева
             }
 
 void detection(){                                                 // условия проверяемые каждые 10 сек  
@@ -190,7 +190,9 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
 at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
 //Serial.println("Пин "), Serial.println(pin);
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1000), Timer2 = 1080, SIM800.println("ATH0");        
+} else if (pin.indexOf("741") > -1 ){ pin= "", Voice(2),  delay(1000), n_send = false,SIM800.println("ATH0");   
+} else if (pin.indexOf("852") > -1 ){ pin= "", Voice(2),  delay(1000), n_send = true, SIM800.println("ATH0");    
+} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1000), Timer2 = 1080, SIM800.println("ATH0");         
 } else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), Timer2 = 0,    SIM800.println("ATH0"), heatingstop(1);     
 } else if (pin.indexOf("#")   > -1 ){ pin= "",                                        SIM800.println("ATH0"), SMS_send = true;}
 if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем пин
