@@ -82,7 +82,8 @@ void loop() {
 if (SIM800.available())  resp_modem();                            // если что-то пришло от SIM800 в Ардуино отправляем для разбора
 if (Serial.available())  resp_serial();                           // если что-то пришло от Ардуино отправляем в SIM800
 if (millis()> Time1 + 10000) Time1 = millis(), detection();       // выполняем функцию detection () каждые 10 сек 
-if (heating == true && digitalRead(STOP_Pin)==1) Timer2 = 0,  heatingstop(1);   // если нажали на педаль тормоза в режиме прогрева
+if (heating == true && digitalRead(STOP_Pin)==1)  heatingstop(1); // если нажали на педаль тормоза в режиме прогрева
+if (digitalRead(STOP_Pin)==1) Timer2 = 0 ;                        // если нажали на педаль тормоза в режиме прогрева
             }
 
 void detection(){                                                 // условия проверяемые каждые 10 сек  
