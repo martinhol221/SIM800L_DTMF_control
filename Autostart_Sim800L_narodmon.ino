@@ -39,10 +39,11 @@ unsigned long Time1, StarterTimeON = 0;
 int inDS, count = 0;
 int interval = 5;                  // интервал отправки данных на народмон сразу после загрузки 
 int Timer = 0;                     // таймер времени прогрева двигателя по умолчанию = 0
-int Timer2 = 1080;                 // часовой таймер (60 sec. x 60 min. / 10 = 360 )
+int Timer2 = 0;                    // часовой таймер (60 sec. x 60 min. / 10 = 360 )
 bool heating = false;              // переменная состояния режим прогрева двигателя
 bool SMS_send = false;             // флаг разовой отправки СМС
 bool ring = false;                 // флаг момента снятия трубки
+
 
 void setup() {
   pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
@@ -61,7 +62,7 @@ void setup() {
   SIM800.begin(9600);              //скорость связи с модемом
  // SIM800.setTimeout(500);          // тайм аут ожидания ответа
   
-  Serial.println("Загрузка v.4.8| MAC:"+MAC+" | TEL:"+call_phone+" | 04/01/2018"); 
+  Serial.println("Загрузка v.5.1| MAC:"+MAC+" | TEL:"+call_phone+" | 24/01/2018"); 
   SIM800_reset();
  // attachInterrupt(0, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D2, или 0 -> 1 на ножке оптопары
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -118,14 +119,11 @@ void detection(){                                                 // услов�
    
     if (Timer == 12 ) SMS_send = true; 
     if (Timer > 0 ) Timer--;                                // если таймер больше ноля  SMS_send = true;
-    if (heating == true && Timer <1)    heatingstop(0);      // остановка прогрева если закончился таймера
-    if (heating == true && Vbat < 11.0 ) heatingstop(1);     // остановка прогрева если напряжение просело ниже 11 вольт 
-    if (heating == true && TempDS[0] > 86) heatingstop(1);   // остановка прогрева если температура достигла 70 град 
-  
-    //  Автозапуск при понижении температуры ниже -18 градусов, при -25 смс оповещение каждых 3 часа
-//  if (Timer2 == 2 && TempDS[0] < -18) Timer2 = 1080, Timer = 120, enginestart(3);  
-//     Timer2--;                                            // вычитаем еденицу
-//  if (Timer2 < 0) Timer2 = 1080;                          // продлеваем таймер на 3 часа (60x60x3/10 = 1080)
+    if (heating == true && Timer <1)       heatingstop(0);  // остановка прогрева если закончился таймера
+    if (heating == true && Vbat < 11.0 )   heatingstop(1);  // остановка прогрева если напряжение просело ниже 11 вольт 
+    if (heating == true && TempDS[0] > 86) heatingstop(1);  // остановка прогрева если температура достигла 70 град 
+    if (Timer2 == 2) {Timer2 = 1080;       if (TempDS[0] < -18) {enginestart(3);}}                                       
+    if (Timer2 >  1)  Timer2--;                       
     if (heating == false) digitalWrite(LED_Pin, HIGH), delay (50), digitalWrite(LED_Pin, LOW);  // моргнем светодиодом
     if (n_send == true) interval--;
     if (interval <1)    interval = 30, SIM800.println ("AT+SAPBR=3,1, \"Contype\",\"GPRS\""), delay (200);    // подключаемся к GPRS 
@@ -184,6 +182,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
                               for (int i=0; i < inDS; i++) SIM800.print("\n#Temp"), SIM800.print(i), SIM800.print("#"), SIM800.print(TempDS[i]);
                                                            SIM800.print("\n#Vbat#"),         SIM800.print(Vbat);          // Напряжение аккумулятора
                                                            SIM800.print("\n#Uptime#"),       SIM800.print(millis()/1000); // Время непрерывной работы
+                                                           SIM800.print("\n#Timer2#"),       SIM800.print(Timer2/6);      // Время таймера автопрогрева
                                                       //   SIM800.print("\n#LAT#"),          SIM800.print(LAT);           // Широта по геолокации
                                                       //   SIM800.print("\n#LNG#"),          SIM800.print(LNG);           // Долгота по геолокации
                                                            SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
@@ -191,8 +190,9 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
 at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
 //Serial.println("Пин "), Serial.println(pin);
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), SIM800.println("ATH0"),heatingstop(1);  
-} else if (pin.indexOf("#")   > -1 ){ pin= "", SIM800.println("ATH0"), SMS_send = true;    }
+} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1000), Timer2 = 1080, SIM800.println("ATH0");        
+} else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), Timer2 = 0,    SIM800.println("ATH0"), heatingstop(1);     
+} else if (pin.indexOf("#")   > -1 ){ pin= "",                                        SIM800.println("ATH0"), SMS_send = true;}
 if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем пин
                     if (heating == false){Voice(1);
                                     }else Voice(8); 
@@ -246,8 +246,8 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
                                    } 
  delay (100);
 //float V_stON = VoltRead();                              // временно так
- while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == LOW)  VoltRead(), delay (50);  
-// while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
+  while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == LOW)   VoltRead(), delay (50);  
+//while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == HIGH)  VoltRead(), delay (50);  
  digitalWrite(STARTER_Pin, LOW), delay (1000);
  //digitalWrite(FIRST_P_Pin, HIGH),           // включаем реле первого положения замка зажигания   
  Serial.println("Стартер выключил, ожидаем 6 сек.");
