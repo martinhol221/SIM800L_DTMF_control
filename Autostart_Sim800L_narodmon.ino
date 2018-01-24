@@ -246,7 +246,8 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
                                    } 
  delay (100);
 //float V_stON = VoltRead();                              // временно так
- while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
+ while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == LOW)  VoltRead(), delay (50);  
+// while ((millis() < (StarterTimeON + StTime)) /* && ((VoltRead() + V_stOFF) < V_stON)*/)VoltRead(), delay (50);
  digitalWrite(STARTER_Pin, LOW), delay (1000);
  //digitalWrite(FIRST_P_Pin, HIGH),           // включаем реле первого положения замка зажигания   
  Serial.println("Стартер выключил, ожидаем 6 сек.");
