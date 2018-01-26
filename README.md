@@ -47,7 +47,7 @@
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/Sin800LV1.5.jpg)
 
-Для подключения к авто по 6 проводам
+Для подключения к авто c класическим замком на 4 провода, если у вас япошка с замком на 6 проводов, то там все веселее... 
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/conecting-001.JPG)
 
