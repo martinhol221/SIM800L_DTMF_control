@@ -306,3 +306,15 @@ void heatingstop(bool reset_timer) {                                 // прог
 
 void Voice(int Track){
     SIM800.print("AT+CREC=4,\"C:\\User\\"), SIM800.print(Track), SIM800.println(".amr\",0,95");}
+
+/*
+
+
+STATE: TCP CLOSED
+
+CONNECT FAIL
+
++PDP: DEACT
+ бан сети
+
+*/
