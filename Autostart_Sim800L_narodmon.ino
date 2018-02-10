@@ -171,7 +171,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
       } else if (at.indexOf("SMS Ready") > -1 || at.indexOf("NO CARRIER") > -1 ) {SIM800.println("AT+CLIP=1;+DDET=1"); // Активируем АОН и декодер DTMF
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
       } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),delay (500); 
-      } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),delay (1000); // устанавливаем соеденение  
+      } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),delay (1800); // устанавливаем соеденение  
        
     //  } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\nERROR") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1"); 
         } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\n+CME ERROR: 3") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1");  
