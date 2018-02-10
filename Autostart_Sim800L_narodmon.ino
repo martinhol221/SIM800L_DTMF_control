@@ -123,7 +123,7 @@ void detection(){                                                 // услов�
     if (heating == true && Timer <1)       heatingstop(0);  // остановка прогрева если закончился таймера
     if (heating == true && Vbat < 11.0 )   heatingstop(1);  // остановка прогрева если напряжение просело ниже 11 вольт 
     if (heating == true && TempDS[0] > 86) heatingstop(1);  // остановка прогрева если температура достигла 70 град 
-    if (Timer2 == 1) {Timer2 = 1080;       if (TempDS[0] < -80) {enginestart(3);}}                                       
+    if (Timer2 == 1) {Timer2 = 1080;       if (TempDS[0] < -18) {enginestart(3);}}                                       
     if (Timer2 >  1)  Timer2--; 
     if (heating == false) digitalWrite(OUT_6, HIGH), delay (50), digitalWrite(OUT_6, LOW);  // моргнем светодиодом
     if (n_send == true) interval--;
