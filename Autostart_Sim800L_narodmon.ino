@@ -4,25 +4,25 @@ SoftwareSerial SIM800(7, 6);        // для новых плат начиная
 OneWire oneWire(4);                 // и настраиваем  пин 4 как шину подключения датчиков DS18B20
 DallasTemperature sensors(&oneWire);
 
-#define FIRST_P_Pin  8              // на реле первого положения замка зажигания
-#define SECOND_P     9              // на реле зажигания, через транзистор с 9-го пина ардуино
-#define STARTER_Pin  12             // на реле стартера, через транзистор с 12-го пина ардуино
-#define WEBASTO_Pin  11             // на реле вебасто или подогрева седушек
-#define LED_Pin      13             // на светодиод (моргалку)
+#define ACC          8              // на реле первого положения замка зажигания
+#define ON           9              // на реле зажигания, через транзистор с 9-го пина ардуино
+#define STARTER      12             // на реле стартера, через транзистор с 12-го пина ардуино
+#define OUT_4        11             // на дополнительное реле
+#define OUT_5        10             // на реле вебасто или подогрева седушек
+#define OUT_6        13             // на светодиод (моргалку)
 #define BAT_Pin      A0             // на батарею, через делитель напряжения 39кОм / 11 кОм
 #define Feedback_Pin A1             // на провод от замка зажигания
 #define STOP_Pin     A2             // на концевик педали тормоза для отключения режима прогрева
 #define PSO_Pin      A3             // на прочие датчики через делитель 39 kOhm / 11 kΩ
-#define REL_Pin      10             // на дополнительное реле
 #define RESET_Pin    5
 
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
-// String LAT = "";                    // переменная храняжая широту 
-// String LNG = "";                    // переменная храняжая долготу 
+// String LAT = "";                // переменная храняжая широту 
+// String LNG = "";                // переменная храняжая долготу 
 String call_phone= "+375290000000"; // телефон входящего вызова    
 String SMS_phone = "+375290000000"; // телефон куда отправляем СМС 
-tring MAC = "80-01-AA-00-00-00";   // МАС-Адрес устройства для индентификации на
-String SENS = "VasjaPupkin";          // Название устройства (придумать свое Citroen 566 или др. для отображения в программе и на карте)
+String MAC = "80-01-AA-00-00-00";   // МАС-Адрес устройства для индентификации на
+String SENS = "VasjaPupkin";       // Название устройства (придумать свое Citroen 566 или др. для отображения в программе и на карте)
 String APN = "internet.mts.by";    // тчка доступа выхода в интернет вашего сотового оператора
 String USER = "mts";               // имя выхода в интернет вашего сотового оператора
 String PASS = "mts";               // пароль доступа выхода в интернет вашего сотового оператора
@@ -46,13 +46,13 @@ bool ring = false;                 // флаг момента снятия тр�
 
 
 void setup() {
-  pinMode(LED_Pin,     OUTPUT);    // указываем пин на выход (светодиод)
-  pinMode(SECOND_P,    OUTPUT);    // указываем пин на выход доп реле зажигания
-  pinMode(STARTER_Pin, OUTPUT);    // указываем пин на выход доп реле стартера
-  pinMode(REL_Pin,     OUTPUT);    // указываем пин на выход для доп нужд.
-  pinMode(FIRST_P_Pin, OUTPUT);    // указываем пин на выход для доп реле первого положения замка зажигания
-  pinMode(WEBASTO_Pin, OUTPUT);    // указываем пин на выход для доп реле вебасто
- // pinMode(RESET_Pin, OUTPUT);      // указываем пин на выход для перезагрузки модема
+  pinMode(ACC,     OUTPUT); 
+  pinMode(ON,      OUTPUT); 
+  pinMode(STARTER, OUTPUT);
+  pinMode(OUT_4,   OUTPUT);
+  pinMode(OUT_5,   OUTPUT);
+  pinMode(OUT_6,   OUTPUT); 
+// pinMode(RESET_Pin, OUTPUT);     
   pinMode(3, INPUT_PULLUP);        // указываем пин на вход для с внутричипной подтяжкой к +3.3V
   pinMode(2, INPUT_PULLUP);        // указываем пин на вход для с внутричипной подтяжкой к +3.3V
   delay(100); 
@@ -62,7 +62,7 @@ void setup() {
   SIM800.begin(9600);              //скорость связи с модемом
  // SIM800.setTimeout(500);          // тайм аут ожидания ответа
   
-  Serial.println("Загрузка v.5.1| MAC:"+MAC+" | TEL:"+call_phone+" | 24/01/2018"); 
+  Serial.println("Загрузка v.5.13| MAC:"+MAC+" | TEL:"+call_phone+" | 10/02/2018"); 
   SIM800_reset();
  // attachInterrupt(0, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D2, или 0 -> 1 на ножке оптопары
  // attachInterrupt(1, callback, FALLING);  // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -123,9 +123,9 @@ void detection(){                                                 // услов�
     if (heating == true && Timer <1)       heatingstop(0);  // остановка прогрева если закончился таймера
     if (heating == true && Vbat < 11.0 )   heatingstop(1);  // остановка прогрева если напряжение просело ниже 11 вольт 
     if (heating == true && TempDS[0] > 86) heatingstop(1);  // остановка прогрева если температура достигла 70 град 
-    if (Timer2 == 1) {Timer2 = 720;       if (TempDS[0] < -10) {enginestart(3);}}                                       
+    if (Timer2 == 1) {Timer2 = 1080;       if (TempDS[0] < -80) {enginestart(3);}}                                       
     if (Timer2 >  1)  Timer2--; 
-    if (heating == false) digitalWrite(LED_Pin, HIGH), delay (50), digitalWrite(LED_Pin, LOW);  // моргнем светодиодом
+    if (heating == false) digitalWrite(OUT_6, HIGH), delay (50), digitalWrite(OUT_6, LOW);  // моргнем светодиодом
     if (n_send == true) interval--;
     if (interval <1)    interval = 30, SIM800.println ("AT+SAPBR=3,1, \"Contype\",\"GPRS\""), delay (200);    // подключаемся к GPRS 
     if (interval == 28 && n_send == true ) SIM800.println ("AT+SAPBR=0,1");    
@@ -149,10 +149,10 @@ void resp_modem (){     //------------------ НАЛИЗИРУЕМ БУФЕР В�
 if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {delay(200), SIM800.println("ATA"), ring = true;
                                                     
             
-     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
+  /*   } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
                                                      delay(50), SIM800.println("ATH0");
                                                      enginestart(3);
-            
+            */
      } else if (at.indexOf("+DTMF: ")  > -1)        {String key = at.substring(at.indexOf("")+9, at.indexOf("")+10);
                                                      pin = pin + key;
                                                      if (pin.indexOf("*") > -1 ) pin= ""; 
@@ -164,22 +164,13 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
      
       } else if (at.indexOf("#123start") > -1   )   {enginestart(5);
       } else if (at.indexOf("#123stop") > -1 )      {heatingstop(1);       
- //   } else if (at.indexOf("#456start") > -1   )   {Timer = at.substring(at.indexOf()+9, at.indexOf()+11).toInt() *6;     
       } else if (at.indexOf("#autoH") > -1 )        {Timer2 = 1080;  
- //   } else if (at.indexOf("sms=off") > -1 )       {sms_report = false;  
- //   } else if (at.indexOf("sms=on") > -1 )        {sms_report = true;     
       } else if (at.indexOf("SMS Ready") > -1 || at.indexOf("NO CARRIER") > -1 ) {SIM800.println("AT+CLIP=1;+DDET=1"); // Активируем АОН и декодер DTMF
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
       } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),delay (500); 
       } else if (at.indexOf("AT+SAPBR=3,1, \"APN\",\""+APN+"\"\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=1,1"),delay (1800); // устанавливаем соеденение  
-       
-    //  } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\nERROR") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1"); 
-        } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\n+CME ERROR: 3") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1");  
-   //   } else if (at.indexOf("STATE: TCP CLOSED") > -1 )     {delay(1000), SIM800.println("AT+CFUN=1,1");     
-        } else if (at.indexOf("CONNECT FAIL") > -1 )          {delay(1000), SIM800.println("AT+CFUN=1,1"); 
-   //   } else if (at.indexOf("+PDP: DEACT") > -1 )           {delay(1000), SIM800.println("AT+CFUN=1,1");      // если банит  сеть
-
-
+      } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\n+CME ERROR: 3") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1");  
+      } else if (at.indexOf("CONNECT FAIL") > -1 )          {delay(1000), SIM800.println("AT+CFUN=1,1"); 
       } else if (at.indexOf("AT+SAPBR=1,1\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=2,1"),        delay (1000);    // проверяем статус соединения    
       } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {/*SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);    // запрашиваем геолокацию локацию
       } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {LAT = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
@@ -195,12 +186,12 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
                                                       //   SIM800.print("\n#LNG#"),          SIM800.print(LNG);           // Долгота по геолокации
                                                            SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
                                                           } 
-at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
-//Serial.println("Пин "), Serial.println(pin);
+                                     at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
+
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
-} else if (pin.indexOf("741") > -1 ){ pin= "", Voice(12),  delay(1000), n_send = false,SIM800.println("ATH0");   
-} else if (pin.indexOf("852") > -1 ){ pin= "", Voice(12),  delay(1000), n_send = true, SIM800.println("ATH0");    
-} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1000), Timer2 = 1080, SIM800.println("ATH0");      
+} else if (pin.indexOf("741") > -1 ){ pin= "", Voice(12),  delay(1600), n_send = false,SIM800.println("ATH0");   
+} else if (pin.indexOf("852") > -1 ){ pin= "", Voice(12),  delay(1600), n_send = true, SIM800.println("ATH0");    
+} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1600), Timer2 = 1080, SIM800.println("ATH0");      
 //} else if (pin.indexOf("951") > -1 ){ pin= "", Voice(2),  delay(1000), SIM800.println("AT+CFUN=1,1");        // перезагрузка модема   
 } else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), Timer2 = 0,    SIM800.println("ATH0"), heatingstop(1);     
 } else if (pin.indexOf("#")   > -1 ){ pin= "",                                        SIM800.println("ATH0"), SMS_send = true;}
@@ -212,7 +203,7 @@ if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем п�
 
 void enginestart(int Attempts ) {                                      // программа запуска двигателя
  /*  ----------------------------------------- ПРЕДНАСТРОЙКА ПЕРЕД ЗАПУСКОМ ---------------------------------------------------------*/
-Serial.println("Предпусковая настройка");
+//Serial.println("Предпусковая настройка");
     detachInterrupt(1);                                    // отключаем аппаратное прерывание, что бы не мешало запуску
     VbatStart = VoltRead();
 
@@ -233,22 +224,22 @@ int z = map(TempDS[0], 0, -25, 0, 5);                     // задаем кол
  
  count++, Serial.print ("Попытка №"), Serial.println(count); 
     
- digitalWrite(SECOND_P,     LOW),   delay (2000);        // выключаем зажигание на 2 сек. на всякий случай   
- digitalWrite(FIRST_P_Pin, HIGH),   delay (1000);        // включаем реле первого положения замка зажигания 
+ digitalWrite(ON,  LOW),    delay (2000);        // выключаем зажигание на 2 сек. на всякий случай   
+ digitalWrite(ACC, HIGH),   delay (1000);        // включаем реле первого положения замка зажигания 
  Voice(3);
- digitalWrite(SECOND_P,    HIGH),   delay (4000);        // включаем зажигание, и выжидаем 4 сек.
+ digitalWrite(ON,  HIGH),   delay (4000);        // включаем зажигание, и выжидаем 4 сек.
  
 // прогреваем свечи несколько раз пропорционально понижению температуры, греем по 8 сек. с паузой 2 сек.
 int zh = z;
-while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digitalWrite(SECOND_P, HIGH), delay(8000);
+while (zh > 0) zh--, Voice(3), digitalWrite(ON, LOW), delay(2000), digitalWrite(ON, HIGH), delay(8000);
  
 // если не нажата педаль тормоза или КПП в нейтрали то включаем реле стартера на время StTime
  if (digitalRead(STOP_Pin) == LOW) {         // в нейтрали на минус
 // if (digitalRead(STOP_Pin) == HIGH) {      // в нейтрали на плюс +12
-                                   Serial.println("Стартер включил");
+                                  // Serial.println("Стартер включил");
                                    Voice(4);
                                    StarterTimeON = millis();
-                                   digitalWrite(STARTER_Pin, HIGH);  // включаем реле стартера
+                                   digitalWrite(STARTER, HIGH);  // включаем реле стартера
                                    } else {
                                    Voice(7); 
                                    heatingstop(1);
@@ -259,9 +250,9 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
 //float V_stON = VoltRead();                              // временно так
   while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == LOW)   VoltRead(), delay (50);  
 //while (millis() < (StarterTimeON + StTime) && digitalRead(PSO_Pin) == HIGH)  VoltRead(), delay (50);  
- digitalWrite(STARTER_Pin, LOW), delay (1000);
- //digitalWrite(FIRST_P_Pin, HIGH),           // включаем реле первого положения замка зажигания   
- Serial.println("Стартер выключил, ожидаем 6 сек.");
+ digitalWrite(STARTER, LOW), delay (1000);
+ //digitalWrite(ACC, HIGH),           // включаем реле первого положения замка зажигания   
+// Serial.println("Стартер выключил, ожидаем 6 сек.");
  Voice(12);
  delay (6000);       
 
@@ -271,7 +262,7 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
                           Serial.println ("Есть запуск!"); 
                           Voice(5);
                           heating = true;
-                          digitalWrite(LED_Pin, HIGH);
+                          digitalWrite(OUT_6, HIGH);
                           break; }                   // считаем старт успешным, выхдим из цикла запуска двигателя
                           
   Voice(6);              
@@ -282,7 +273,7 @@ while (zh > 0) zh--, Voice(3), digitalWrite(SECOND_P, LOW), delay(2000), digital
 Serial.println ("Выход из запуска");
  if (count != 1) SMS_send = true;                   // отправляем смс СРАЗУ только в случае незапуска c первой попытки
  if (heating == false){ Timer = 0, Voice(10);                  // обнуляем таймер если запуска не произошло
-           } else digitalWrite(WEBASTO_Pin, HIGH);  // включаем подогрев седений если все ОК
+           } else digitalWrite(OUT_5, HIGH);  // включаем подогрев седений если все ОК
 
 
            
@@ -301,11 +292,11 @@ float VoltRead()    {                               // замеряем напр
 
 
 void heatingstop(bool reset_timer) {                                 // программа остановки прогрева двигателя
-    digitalWrite(SECOND_P,    LOW), delay (100);
-    digitalWrite(LED_Pin,     LOW), delay (100);
-    digitalWrite(FIRST_P_Pin, LOW), delay (100);
-    digitalWrite(WEBASTO_Pin, LOW), delay (100);
-    heating= false,                 delay(2000); 
+    digitalWrite(ON,    LOW), delay (100);
+    digitalWrite(OUT_6, LOW), delay (100);
+    digitalWrite(ACC,   LOW), delay (100);
+    digitalWrite(OUT_5, LOW), delay (100);
+    heating= false,           delay(2000); 
     Serial.println ("Выключить все"); 
     if (reset_timer == true) Timer = 0;
     }
