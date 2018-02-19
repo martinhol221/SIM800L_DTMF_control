@@ -164,7 +164,7 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
      
       } else if (at.indexOf("#123start") > -1   )   {enginestart(5);
       } else if (at.indexOf("#123stop") > -1 )      {heatingstop(1);       
-      } else if (at.indexOf("#autoH") > -1 )        {Timer2 = 1080;  
+      } else if (at.indexOf("#autoh") > -1 )        {Timer2 = 1080;  
       } else if (at.indexOf("SMS Ready") > -1 || at.indexOf("NO CARRIER") > -1 ) {SIM800.println("AT+CLIP=1;+DDET=1"); // Активируем АОН и декодер DTMF
     /*  -------------------------------------- проверяем соеденеиние с ИНТЕРНЕТ ------------------------------------------------------------------- */
       } else if (at.indexOf("AT+SAPBR=3,1, \"Contype\",\"GPRS\"\r\r\nOK") > -1 ) {SIM800.println("AT+SAPBR=3,1, \"APN\",\""+APN+"\""),delay (500); 
