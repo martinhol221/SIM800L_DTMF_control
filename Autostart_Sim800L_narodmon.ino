@@ -125,7 +125,8 @@ void detection(){                                                 // услов�
     if (heating == true && TempDS[0] > 86) heatingstop(1);  // остановка прогрева если температура достигла 70 град 
     if (Timer2 == 1) {Timer2 = 1080;       if (TempDS[0] < -18) {enginestart(3);}}                                       
     if (Timer2 >  1)  Timer2--; 
-    if (heating == false) digitalWrite(OUT_6, HIGH), delay (50), digitalWrite(OUT_6, LOW);  // моргнем светодиодом
+    if (heating == false) digitalWrite(OUT_6, HIGH), delay (50), digitalWrite(OUT_6, LOW);  // моргаем светодиодом когда ждем
+ //   if (heating == true) digitalWrite(OUT_6, HIGH), delay (50),  digitalWrite(OUT_6, LOW);  // моргаем светодиодом когда греемся
     if (n_send == true) interval--;
     if (interval <1)    interval = 30, SIM800.println ("AT+SAPBR=3,1, \"Contype\",\"GPRS\""), delay (200);    // подключаемся к GPRS 
     if (interval == 28 && n_send == true ) SIM800.println ("AT+SAPBR=0,1");    
