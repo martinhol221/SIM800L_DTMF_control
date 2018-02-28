@@ -192,8 +192,8 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
        if (pin.indexOf("123") > -1 ){ pin= "", Voice(2), enginestart(3);  
 } else if (pin.indexOf("741") > -1 ){ pin= "", Voice(12),  delay(1600), n_send = false,SIM800.println("ATH0");   
 } else if (pin.indexOf("852") > -1 ){ pin= "", Voice(12),  delay(1600), n_send = true, SIM800.println("ATH0");    
-} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(2),  delay(1600), Timer2 = 1080, SIM800.println("ATH0");      
-//} else if (pin.indexOf("951") > -1 ){ pin= "", Voice(2),  delay(1000), SIM800.println("AT+CFUN=1,1");        // перезагрузка модема   
+} else if (pin.indexOf("456") > -1 ){ pin= "", Voice(12),  delay(1600), Timer2 = 1080, SIM800.println("ATH0");      
+//} else if (pin.indexOf("951") > -1 ){ pin= "", Voice(12),  delay(1000), SIM800.println("AT+CFUN=1,1");        // перезагрузка модема   
 } else if (pin.indexOf("789") > -1 ){ pin= "", Voice(10), delay(1500), Timer2 = 0,    SIM800.println("ATH0"), heatingstop(1);     
 } else if (pin.indexOf("#")   > -1 ){ pin= "",                                        SIM800.println("ATH0"), SMS_send = true;}
 if (ring == true) { ring = false, delay (2000), pin= ""; // обнуляем пин
