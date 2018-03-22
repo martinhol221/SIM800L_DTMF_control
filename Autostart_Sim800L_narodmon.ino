@@ -236,7 +236,7 @@ while (zh > 0) zh--, Voice(3), digitalWrite(ON, LOW), delay(2000), digitalWrite(
  
 // если не нажата педаль тормоза или КПП в нейтрали то включаем реле стартера на время StTime
  if (digitalRead(STOP_Pin) == LOW) {         // в нейтрали на минус
-// if (digitalRead(STOP_Pin) == HIGH) {      // в нейтрали на плюс +12
+// if (digitalRead(PSO_Pin) == HIGH) {      // в нейтрали на плюс +12
                                   // Serial.println("Стартер включил");
                                    Voice(4);
                                    StarterTimeON = millis();
