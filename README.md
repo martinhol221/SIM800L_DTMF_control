@@ -9,6 +9,8 @@
 
 ![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/1.72-01.JPG)
 
+![](https://github.com/martinhol221/SIM800L_DTMF_control/blob/master/img/shema.JPG)
+
 # Прошивка, скетч
 
 [Актуальный скетч с отправкой данный на сервис narodmon.ru](https://raw.githubusercontent.com/martinhol221/SIM800L_DTMF_control/master/Autostart_Sim800L_narodmon.ino) в Arduino Pro Mini (8Mhz/3.3v) для [Arduino IDE](https://www.arduino.cc/en/main/software)
