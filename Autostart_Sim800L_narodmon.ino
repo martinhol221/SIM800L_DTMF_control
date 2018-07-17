@@ -17,8 +17,8 @@ DallasTemperature sensors(&oneWire);
 #define RESET_Pin    5
 
 /*  ----------------------------------------- ИНДИВИДУАЛЬНЫЕ НАСТРОЙКИ !!!---------------------------------------------------------   */
-// String LAT = "";                // переменная храняжая широту 
-// String LNG = "";                // переменная храняжая долготу 
+String LAT = "";                // переменная храняжая широту 
+String LNG = "";                // переменная храняжая долготу 
 String call_phone= "+375290000000"; // телефон входящего вызова    
 String SMS_phone = "+375290000000"; // телефон куда отправляем СМС 
 String MAC = "80-01-AA-00-00-00";   // МАС-Адрес устройства для индентификации на
@@ -62,7 +62,7 @@ void setup() {
   SIM800.begin(9600);              //скорость связи с модемом
  // SIM800.setTimeout(500);          // тайм аут ожидания ответа
   
-  Serial.println("Загрузка v.5.13| MAC:"+MAC+" | TEL:"+call_phone+" | 10/02/2018"); 
+  Serial.println("Загрузка v.5.13| MAC:"+MAC+" | TEL:"+call_phone+" | 17/08/2018"); 
   SIM800_reset();
   attachInterrupt(0, close_d, FALLING);  // включаем прерывание при переходе 1 -> 0 на D2, или 0 -> 1 на ножке оптопары
   attachInterrupt(1, open_d, FALLING);   // включаем прерывание при переходе 1 -> 0 на D3, или 0 -> 1 на ножке оптопары
@@ -113,7 +113,7 @@ void detection(){                                                 // услов�
         if (heating == true)             SIM800.print("\n Timer "),             SIM800.print(Timer/6),   SIM800.print("min.");
         SIM800.print("\n Attempts:"), SIM800.print(count);
         SIM800.print("\n Uptime: "),     SIM800.print(millis()/3600000),        SIM800.print("H.");
-      //  SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
+        SIM800.print("\n https://www.google.com/maps/place/"), SIM800.print(LAT), SIM800.print(","), SIM800.print(LNG);
         SIM800.print((char)26);  }
    
     if (Timer == 12 ) SMS_send = true; 
@@ -171,18 +171,18 @@ if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1
       } else if (at.indexOf("AT+CIPSTART=\"TCP\",\"narodmon.ru\",\"8283\"\r\r\n+CME ERROR: 3") > -1 )  {delay(1000), SIM800.println("AT+CFUN=1,1");  
       } else if (at.indexOf("CONNECT FAIL") > -1 )          {delay(1000), SIM800.println("AT+CFUN=1,1"); 
       } else if (at.indexOf("AT+SAPBR=1,1\r\r\nOK") > -1 )  {SIM800.println("AT+SAPBR=2,1"),        delay (1000);    // проверяем статус соединения    
-      } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {/*SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);    // запрашиваем геолокацию локацию
+      } else if (at.indexOf("+SAPBR: 1,1") > -1 )           {SIM800.println("AT+CIPGSMLOC=1,1"),    delay (3000);    // запрашиваем геолокацию локацию
       } else if (at.indexOf("+CIPGSMLOC: 0,") > -1   )      {LAT = at.substring(at.indexOf("+CIPGSMLOC: 0,")+24, at.indexOf("+CIPGSMLOC: 0,")+33);
                                                              LNG = at.substring(at.indexOf("+CIPGSMLOC: 0,")+14, at.indexOf("+CIPGSMLOC: 0,")+23); 
-                                            delay (200),*/  SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (500);
+                                            delay (200),   SIM800.println("AT+CIPSTART=\"TCP\",\""+SERVER+"\",\""+PORT+"\""), delay (500);
       } else if (at.indexOf("CONNECT OK\r\n") > -1 )      {SIM800.println("AT+CIPSEND"), delay (1200);      
       } else if (at.indexOf("AT+CIPSEND\r\r\n>") > -1 )   {SIM800.print("#" +MAC+ "#" +SENS);                              // заголовок пакета       
                               for (int i=0; i < inDS; i++) SIM800.print("\n#Temp"), SIM800.print(i), SIM800.print("#"), SIM800.print(TempDS[i]);
                                                            SIM800.print("\n#Vbat#"),         SIM800.print(Vbat);          // Напряжение аккумулятора
                                                            SIM800.print("\n#Uptime#"),       SIM800.print(millis()/1000); // Время непрерывной работы
                                                            SIM800.print("\n#Timer2#"),       SIM800.print(Timer2/6);      // Время таймера автопрогрева
-                                                      //   SIM800.print("\n#LAT#"),          SIM800.print(LAT);           // Широта по геолокации
-                                                      //   SIM800.print("\n#LNG#"),          SIM800.print(LNG);           // Долгота по геолокации
+                                                           SIM800.print("\n#LAT#"),          SIM800.print(LAT);           // Широта по геолокации
+                                                           SIM800.print("\n#LNG#"),          SIM800.print(LNG);           // Долгота по геолокации
                                                            SIM800.println("\n##"),           SIM800.println((char)26), delay (100); // закрываем пакет
                                                           } 
                                      at = "";            // Возвращаем ответ можема в монитор порта , очищаем переменную
