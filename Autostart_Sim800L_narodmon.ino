@@ -148,10 +148,10 @@ void resp_modem (){     //------------------ НАЛИЗИРУЕМ БУФЕР В�
 if (at.indexOf("+CLIP: \""+call_phone+"\",") > -1  && at.indexOf("+CMGR:") == -1 ) {delay(200), SIM800.println("ATA"), ring = true;
                                                     
             
-  /*   } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
+     } else if (at.indexOf("+CLIP: \""+SMS_phone+"\",") > -1 && at.indexOf("+CMGR:") == -1 ) {
                                                      delay(50), SIM800.println("ATH0");
                                                      enginestart(3);
-            */
+            
      } else if (at.indexOf("+DTMF: ")  > -1)        {String key = at.substring(at.indexOf("")+9, at.indexOf("")+10);
                                                      pin = pin + key;
                                                      if (pin.indexOf("*") > -1 ) pin= ""; 
